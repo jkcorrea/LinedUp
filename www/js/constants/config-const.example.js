@@ -1,13 +1,13 @@
-// Example Config constant file. In bash, run:
-// 'cp config-const.example.js config-const.js'
+// Example Config constant file. In bash (assuming you are cd'd to the project root dir), run:
+// 'cp www/js/constants/config-const.example.js www/js/constants/config-const.js'
 // Then fill in the new config-const.js file with your private settings
 
 'use strict';
 
 module.exports = {
   ENV: {
-    'PARSE_APP_ID': '7QWvetVv8YZmDkQ1zCM7KLADoCcMOZ3mCJHGNpo9',
-    'PARSE_JS_KEY': 't2jFEQ6b6fJF7DxYKteRYFdWS28Mve3LzaCgSHok'
+    'PARSE_APP_ID': 'YOUR PARSE APP ID HERE',
+    'PARSE_JS_KEY': 'YOUR PARSE JS KEY HERE'
   },
   BUILD: {
   }
