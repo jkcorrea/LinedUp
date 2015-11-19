@@ -1,0 +1,5 @@
+{
+  "name": "LinedUp",
+  "app_id": "org.cmu_is_projects.linedup",
+  "gulpStartupTasks": ["sass", "watch"]
+}

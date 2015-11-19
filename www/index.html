@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <!-- ionic meta tags -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <!-- custom meta tags -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>LinedUp</title>
+
+    <link href="css/app.css" rel="stylesheet">
+    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+
+  </head>
+  <body ng-app="LinedUp">
+
+    <!-- the nav bar will be updated as we navigate between views -->
+    <!-- <ion-nav-bar> can be removed when using sidemenu (contained in menu.html) -->
+    <ion-nav-bar class="bar-royal">
+      <ion-nav-back-button></ion-nav-back-button>
+    </ion-nav-bar>
+    <!-- the current view will be rendered in the <ion-nav-view> directive -->
+    <ion-nav-view></ion-nav-view>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <script src="//www.parsecdn.com/js/parse-1.6.7.min.js"></script>
+
+    <!-- your app's js -->
+    <script src="dist/bundle.js"></script>
+  </body>
+</html>

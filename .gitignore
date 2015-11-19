@@ -1,0 +1,31 @@
+# temp files
+.DS_Store
+.tmp
+.sass-cache
+
+# npm
+/node_modules/
+
+# Built files
+/www/dist/
+
+# App secrets
+/www/js/constants/config-const.js
+
+# cordova
+/platforms/
+/plugins/
+
+# IDE
+*.sublime-project
+*.sublime-workspace
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Dropbox conflicted copies
+*conflicted copy*
+
+# Fuse_hidden files
+.fuse_hidden*

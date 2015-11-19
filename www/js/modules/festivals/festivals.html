@@ -1,0 +1,21 @@
+<ion-view view-title="All Festivals">
+  <ion-nav-buttons side="right" class="show">
+    <button class="button button-icon icon ion-android-add" ng-click=""></button>
+  </ion-nav-buttons>
+
+  <ion-content>
+    <!-- content goes here -->
+    <br>
+    <ion-list class="festivals-list">
+      <ion-item
+        collection-repeat="f in festivals"
+        class="item-remove-animate"
+        type="item-text-wrap"
+        item-height="100">
+        <!-- ui-sref="festivals.festivals"> -->
+        <img ng-src="{{f.banner}}"/>
+      </ion-item>
+    </ion-list>
+
+  </ion-content>
+</ion-view>
