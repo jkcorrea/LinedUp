@@ -1,9 +1,7 @@
-'use strict';
-
 function AppMain ($ionicPlatform, Config) {
   $ionicPlatform.ready(function () {
     // console.log('test');
-    Parse.initialize(Config.ENV['PARSE_APP_ID'], Config.ENV['PARSE_JS_KEY']);
+    Parse.initialize(Config.ENV.PARSE_APP_ID, Config.ENV.PARSE_JS_KEY);
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)

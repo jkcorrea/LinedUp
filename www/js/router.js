@@ -1,15 +1,11 @@
-'use strict';
-
-var modulesDir = '/js/modules/';
-var getTemplateUrl = function (template) {
-  return modulesDir + template + '/' + template + '.html';
+var modulesDir = './js/modules/';
+var getTemplateUrl = function (template, module) {
+  return modulesDir + (module || template) + '/' + template + '.html';
 };
 
 function AppRouter ($stateProvider, $urlRouterProvider) {
-  // ROUTING with ui.router
   $urlRouterProvider.otherwise('/main/festivals');
   $stateProvider
-    // this state is placed in the <ion-nav-view> in the index.html
     .state('main', {
       url: '/main',
       abstract: true,
@@ -20,19 +16,29 @@ function AppRouter ($stateProvider, $urlRouterProvider) {
         views: {
           'pageContent': {
             templateUrl: getTemplateUrl('festivals'),
-            controller: 'FestivalsCtrl'
+            controller: 'FestivalsController as festivals'
+          }
+        }
+      })
+      .state('main.festival', {
+        url: '/festival/:festivalId',
+        views: {
+          'pageContent': {
+            templateUrl: getTemplateUrl('festival', 'festivals'),
+            controller: 'FestivalsController as festivals'
           }
         }
       })
       .state('main.debug', {
-        url: '/main/debug',
+        url: '/debug',
         views: {
           'pageContent': {
             templateUrl: getTemplateUrl('debug'),
-            controller: 'DebugCtrl'
+            controller: 'DebugController as debug'
           }
         }
       });
+
 }
 
 module.exports = ['$stateProvider', '$urlRouterProvider', AppRouter];

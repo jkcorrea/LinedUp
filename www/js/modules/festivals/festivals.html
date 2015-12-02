@@ -6,13 +6,13 @@
   <ion-content>
     <!-- content goes here -->
     <br>
-    <ion-list class="festivals-list">
+    <ion-list class="festivals-list" ng-if="festivals && festivals.length > 0">
       <ion-item
         collection-repeat="f in festivals"
         class="item-remove-animate"
         type="item-text-wrap"
-        item-height="100">
-        <!-- ui-sref="festivals.festivals"> -->
+        item-height="100"
+        ui-sref="main.festival({festivalId: f.id})">
         <img ng-src="{{f.banner}}"/>
       </ion-item>
     </ion-list>

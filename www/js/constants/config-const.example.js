@@ -2,8 +2,6 @@
 // 'cp www/js/constants/config-const.example.js www/js/constants/config-const.js'
 // Then fill in the new config-const.js file with your private settings
 
-'use strict';
-
 module.exports = {
   ENV: {
     'PARSE_APP_ID': 'YOUR PARSE APP ID HERE',

@@ -9033,6 +9033,8 @@ a.button {
 .festivals-list .item {
   border: none;
   max-height: 100px; }
+  .festivals-list .item .item-content {
+    padding: 16px; }
   .festivals-list .item img {
     display: block;
     margin: 0 auto;

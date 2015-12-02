@@ -1,22 +1,21 @@
 var gulp = require('gulp');
 var browserify = require('browserify');
 var $ = require('gulp-load-plugins')();
-var sh = require('shelljs');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 
 var paths = {
   sass: ['scss/**/*.scss'],
   js: ['www/js/**/*.js', '!www/js/lib/**/*.js', '!www/dist/**/*.js'],
-  json: ['www/js/**/*.json', '!www/js/lib/**/*.json', '!www/dist/**/*.json']
+  json: ['www/js/**/*.json', '!www/js/lib/**/*.json', '!www/dist/**/*.json'],
 };
 
-gulp.task('default', ['watch'])
+gulp.task('default', ['watch']);
 
 /*
  * Watch for changes, update as needed
  */
-gulp.task('watch', function () {
+gulp.task('watch', function() {
   gulp.start('linting-throw');
   gulp.start('browserify');
 
@@ -61,12 +60,12 @@ gulp.task('browserify', function() {
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
-    .pipe($.sourcemaps.init({loadMaps: true}))
-      .pipe($.uglify())
+    // .pipe($.sourcemaps.init({loadMaps: true}))
+      // .pipe($.uglify())
       .on('error', $.util.log)
     .pipe($.sourcemaps.write('./'))
     .pipe(gulp.dest('www/dist'));
-})
+});
 
 /*
  * SASS - Compile it down to css in www/css/
