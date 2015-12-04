@@ -3,21 +3,16 @@ function FestivalsController($scope, $state, $stateParams, FestivalService) {
 
   var show = function() {
     FestivalService.getFestival($stateParams.festivalId).then(
-      function success(festival) {
-        $scope.festivalName = festival.get('name');
-      }, function fail(err) {
-        console.log(err);
-      });
+      function success(festival) { $scope.festival = festival; },
+      function fail(err) { throw err; }
+    );
   };
 
   var index = function() {
-    $scope.festivals = [];
     FestivalService.getFestivals().then(
-      function success(result) {
-        $scope.festivals = result;
-      }, function fail(err) {
-        console.log('Failed to load all festivals!\n', err);
-      });
+      function success(festivals) { $scope.festivals = festivals; },
+      function fail(err) { throw err; }
+    );
   };
 
   // Run the corresponding controller#action

@@ -1,5 +1,4 @@
 function FestivalService($q) {
-
   this.saveFestival = function(festival) {
     // return $http.post('/festivals', festival);s
   };
@@ -13,18 +12,8 @@ function FestivalService($q) {
     var deferred = $q.defer();
 
     festivalQuery.find({
-      success: function(results) {
-        deferred.resolve(results.map(function(f) {
-          return {
-            id: f.id,
-            name: f.get('name'),
-            banner: f.get('banner').url(),
-          };
-        }));
-      },
-      error: function(err) {
-        deferred.reject(err);
-      },
+      success: function(festivals) { deferred.resolve(festivals); },
+      error: function(err) { deferred.reject(err); },
     });
 
     return deferred.promise;
@@ -35,12 +24,8 @@ function FestivalService($q) {
     var deferred = $q.defer();
 
     festivalQuery.get(id, {
-      success: function(result) {
-        deferred.resolve(result);
-      },
-      error: function(err) {
-        deferred.reject(err);
-      },
+      success: function(festival) { deferred.resolve(festival); },
+      error: function(err) { deferred.reject(err); },
     });
 
     return deferred.promise;
