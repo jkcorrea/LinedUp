@@ -6,11 +6,11 @@ var buffer = require('vinyl-buffer');
 
 var paths = {
   sass: ['scss/**/*.scss'],
-  js: ['www/js/**/*.js', '!www/js/lib/**/*.js', '!www/dist/**/*.js'],
-  json: ['www/js/**/*.json', '!www/js/lib/**/*.json', '!www/dist/**/*.json'],
+  js: ['www/js/**/*.js', '!www/js/lib/**/*.js'],
+  json: ['www/js/**/*.json', '!www/js/lib/**/*.json'],
+  bower: ['bower.json', '.bowerrc'],
 };
 
-gulp.task('default', ['watch']);
 
 /*
  * Watch for changes, update as needed
@@ -19,9 +19,41 @@ gulp.task('watch', function() {
   gulp.start('linting-throw');
   gulp.start('browserify');
 
+  // gulp.watch(paths.bower, ['bower'])
   gulp.watch(paths.sass, ['sass']);
   gulp.watch(paths.js.concat(paths.json), ['linting-throw', 'browserify']);
   // var _log = function (event) { console.log('File ' + event.path + ' was ' + event.type + ', running tasks...'); };
+});
+
+
+/*
+ * Browserify - for bundling all require'd js files into one www/dist/bundle.js
+ */
+gulp.task('browserify', function() {
+  return browserify('www/js/app.js', {debug: true})
+    .bundle()
+    .pipe(source('bundle.js'))
+    .pipe(buffer())
+    // .pipe($.sourcemaps.init({loadMaps: true}))
+      // .pipe($.uglify())
+      .on('error', $.util.log)
+    .pipe($.sourcemaps.write('./'))
+    .pipe(gulp.dest('www/dist'));
+});
+
+
+/*
+ * SASS - Compile it down to css in www/css/
+ */
+gulp.task('sass', function(done) {
+  gulp.src('./scss/app.scss')
+    .pipe($.sass())
+    .on('error', $.sass.logError)
+    .pipe(gulp.dest('./www/css/'))
+    .pipe($.minifyCss({ keepSpecialComments: 0 }))
+    .pipe($.rename({ extname: '.min.css' }))
+    .pipe(gulp.dest('./www/css/'))
+    .on('end', done);
 });
 
 /*
@@ -52,34 +84,4 @@ gulp.task('jsonlint-throw', jsonlint(true));
 gulp.task('linting', ['eslint', 'jsonlint']);
 gulp.task('linting-throw', ['eslint-throw', 'jsonlint-throw']);
 
-/*
- * Browserify - for bundling all require'd js files into one www/dist/bundle.js
- */
-gulp.task('browserify', function() {
-  return browserify('www/js/app.js', {debug: true})
-    .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(buffer())
-    // .pipe($.sourcemaps.init({loadMaps: true}))
-      // .pipe($.uglify())
-      .on('error', $.util.log)
-    .pipe($.sourcemaps.write('./'))
-    .pipe(gulp.dest('www/dist'));
-});
-
-/*
- * SASS - Compile it down to css in www/css/
- */
-
-gulp.task('sass', function(done) {
-  gulp.src('./scss/app.scss')
-    .pipe($.sass())
-    .on('error', $.sass.logError)
-    .pipe(gulp.dest('./www/css/'))
-    .pipe($.minifyCss({
-      keepSpecialComments: 0
-    }))
-    .pipe($.rename({ extname: '.min.css' }))
-    .pipe(gulp.dest('./www/css/'))
-    .on('end', done);
-});
+gulp.task('default', ['watch']);

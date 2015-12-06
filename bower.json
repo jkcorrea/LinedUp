@@ -1,0 +1,25 @@
+{
+  "name": "linedup",
+  "description": "",
+  "main": "",
+  "authors": [
+    "jkcorrea"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jkcorrea/LinedUp",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "vis": "~4.10.0",
+    "parse": "~1.6.7",
+    "ionic": "driftyco/ionic-bower#master"
+  }
+}
