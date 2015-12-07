@@ -4,15 +4,12 @@
 .sass-cache
 *.log
 
-# npm
+# Ignore packages - use npm/bower to pull them on each clone
 /node_modules/
-/bower_components/
+/app/bower_components/
 
-# Built files
-/www/dist/
-
-# App secrets
-/www/js/constants/config-const.js
+# Ignore build directory, all code in here should be auto-generated
+/www/
 
 # cordova
 /platforms/

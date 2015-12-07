@@ -1,0 +1,19 @@
+// Include all of Ionic. Import overrides before importing ionic.
+@import "variable_overrides";
+@import "../bower_components/ionic/scss/ionic";
+@import "../bower_components/vis/dist/vis";
+
+
+.festivals-list {
+  .item {
+    border: none;
+    max-height: 100px;
+
+    .item-content { padding: 16px; }
+    img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+  }
+}
