@@ -2,10 +2,5 @@
   "name": "LinedUp",
   "app_id": "org.cmu_is_projects.linedup",
   "gulpStartupTasks": ["default"],
-  "watchPatterns": [
-    "www/**/*",
-    "!www/js/**/*",
-    "!www/scss/**/*",
-    "!www/bower_components/**/*"
-  ]
+  "watchPatterns": ["www/**/*"]
 }
