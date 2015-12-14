@@ -1,17 +1,29 @@
 <ion-view>
   <ion-nav-title>{{festival.get('name')}}</ion-nav-title>
 
+  <ion-nav-buttons side="secondary">
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()"></button>
+  </ion-nav-buttons>
+
+
+
   <ion-content scroll="false" class="festival-content">
 
-      <div id="festival-timeline">
-      </div>
+      <div id="festival-timeline"></div>
 
 
       <div id="performances-list-container">
+
         <ion-alpha-scroll id="performances-list" ng-model="performances" key="name">
           <div>{{item.name}}</div>
         </ion-alpha-scroll>
+
+        <div ng-if="performances !== undefined && !performances.length" class="no-results">
+          <p>No Results</p>
+        </div>
+
       </div>
+
 
   </ion-content>
 </ion-view>

@@ -1,36 +1,42 @@
-function FestivalsController($scope, $state, $stateParams, FestivalService, PerformanceService) {
+function FestivalsController($scope, $state, $stateParams, FestivalService, PerformanceService, $ionicFilterBar) {
   console.log('Hello from your Controller: FestivalsCtrl in module main:. This is your controller:', this);
   var fail = function(msg) { throw "Could not retrieve festival(s): ", msg; };
 
   var show = function(festival) {
-    var container = document.getElementById('festival-timeline');
-    // var performance = Parse.Object.extend("Performance");
-    // var festival = Parse.Object.extend("Festival");
-    // var relation = festival.relation("performances");
-    // relation.add(performance);
+    // Configure the Filter/Search Bar
+      var filterBarInstance;
+      $scope.showFilterBar = function() {
+        filterBarInstance = $ionicFilterBar.show({
+          items: $scope.performances,
+          update: function(filteredItems, filterText) { $scope.performances = filteredItems; }
+        });
+      };
 
-    $scope.festival = festival;
-    $scope.performances = PerformanceService.getPerformancesForFestival(0);
+    // Set up the timeline
+      var timelineContainer = document.getElementById('festival-timeline');
+      // var dataSet = new VisDataSet();
+      // dataSet.add({
+      //   "1": {
+      //     "id": 1,
+      //     "content": "<i class=\"fi-flag\"></i> item 1",
+      //     "start": (new Date()).toISOString(),
+      //     "className": "magenta",
+      //     "type": "box"
+      //   }
+      // });
 
-    // var dataSet = new VisDataSet();
-    // dataSet.add({
-    //   "1": {
-    //     "id": 1,
-    //     "content": "<i class=\"fi-flag\"></i> item 1",
-    //     "start": (new Date()).toISOString(),
-    //     "className": "magenta",
-    //     "type": "box"
-    //   }
-    // });
+      timelineData = {};
+      timelineOpts = {
+        min: festival.get("start") || "",
+        max: festival.get("end") || "",
+        height: 250
+      };
 
-    timelineData = {};
-    timelineOpts = {
-      min: festival.get("start") || "",
-      max: festival.get("end") || "",
-      height: 250
-    };
+      var timeline = new vis.Timeline(timelineContainer, timelineData, timelineOpts);
 
-    var timeline = new vis.Timeline(container, timelineData, timelineOpts);
+    // Other view data
+      $scope.festival = festival;
+      $scope.performances = PerformanceService.getPerformancesForFestival(0);
   };
 
   var index = function(festivals) { $scope.festivals = festivals; };
@@ -55,5 +61,11 @@ module.exports = angular.module('festivals', [])
   '$stateParams',
   'FestivalService',
   'PerformanceService',
+  '$ionicFilterBar',
   FestivalsController
 ]);
+
+    // var performance = Parse.Object.extend("Performance");
+    // var festival = Parse.Object.extend("Festival");
+    // var relation = festival.relation("performances");
+    // relation.add(performance);

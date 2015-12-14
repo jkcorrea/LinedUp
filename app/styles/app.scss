@@ -1,8 +1,9 @@
 // Include all of Ionic. Import overrides before importing ionic.
-@import "variable_overrides";
-@import "../bower_components/ionic/scss/ionic";
-@import "../bower_components/vis/dist/vis";
-@import "../bower_components/ion-alpha-scroll/src/ion-alpha-scroll";
+@import "variable_overrides",
+        "../bower_components/ionic/scss/ionic",
+        "../bower_components/vis/dist/vis",
+        "../bower_components/ion-alpha-scroll/src/ion-alpha-scroll",
+        "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
 
 
 #my-festivals-list {
@@ -36,6 +37,11 @@
 
     #performances-list { position: absolute; height: 100%; width: 100%; }
     .list, .scroll-view { height: 100% !important; }
+
+    ul.ion_alpha_sidebar {
+      position: absolute;
+      li { line-height: 14px; }
+    }
   }
 
 }

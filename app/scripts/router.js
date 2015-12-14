@@ -1,7 +1,7 @@
 var modulesDir = './js/modules/';
 var getTemplateUrl = function (template, module) { return modulesDir + (module || template) + '/' + template + '.html' };
 
-function AppRouter ($stateProvider, $urlRouterProvider) {
+function AppRouter ($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProvider) {
   $urlRouterProvider.otherwise('/main/festivals');
   $stateProvider
     .state('main', {
@@ -27,7 +27,6 @@ function AppRouter ($stateProvider, $urlRouterProvider) {
           }
         }
       });
-
 }
 
-module.exports = ['$stateProvider', '$urlRouterProvider', AppRouter];
+module.exports = ['$stateProvider', '$urlRouterProvider', '$ionicFilterBarConfigProvider', AppRouter];
