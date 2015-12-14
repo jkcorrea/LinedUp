@@ -20,6 +20,7 @@
     "angular": "~1.4.8",
     "vis": "~4.10.0",
     "parse": "~1.6.7",
-    "ionic": "driftyco/ionic-bower#master"
+    "ionic": "driftyco/ionic-bower#master",
+    "ion-alpha-scroll": "~0.1.3"
   }
 }

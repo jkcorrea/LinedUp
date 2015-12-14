@@ -2,9 +2,10 @@
 @import "variable_overrides";
 @import "../bower_components/ionic/scss/ionic";
 @import "../bower_components/vis/dist/vis";
+@import "../bower_components/ion-alpha-scroll/src/ion-alpha-scroll";
 
 
-.festivals-list {
+#my-festivals-list {
   .item {
     border: none;
     max-height: 100px;
@@ -16,4 +17,25 @@
       max-width: 100%;
     }
   }
+}
+
+.festival-content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+
+  #festival-timeline {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #performances-list-container {
+    position: relative;
+    flex: 5;
+
+    #performances-list { position: absolute; height: 100%; width: 100%; }
+    .list, .scroll-view { height: 100% !important; }
+  }
+
 }

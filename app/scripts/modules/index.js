@@ -1,0 +1,1 @@
+require('./festivals/festivals-controller');

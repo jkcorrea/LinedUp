@@ -1,7 +1,5 @@
 var modulesDir = './js/modules/';
-var getTemplateUrl = function (template, module) {
-  return modulesDir + (module || template) + '/' + template + '.html';
-};
+var getTemplateUrl = function (template, module) { return modulesDir + (module || template) + '/' + template + '.html' };
 
 function AppRouter ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/main/festivals');
@@ -26,15 +24,6 @@ function AppRouter ($stateProvider, $urlRouterProvider) {
           'pageContent': {
             templateUrl: getTemplateUrl('festival', 'festivals'),
             controller: 'FestivalsController as festivals'
-          }
-        }
-      })
-      .state('main.debug', {
-        url: '/debug',
-        views: {
-          'pageContent': {
-            templateUrl: getTemplateUrl('debug'),
-            controller: 'DebugController as debug'
           }
         }
       });

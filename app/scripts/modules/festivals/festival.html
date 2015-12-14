@@ -1,11 +1,17 @@
 <ion-view>
   <ion-nav-title>{{festival.get('name')}}</ion-nav-title>
 
-  <ion-content>
-    <!-- content goes here -->
-    <br>
+  <ion-content scroll="false" class="festival-content">
 
-    <vis-timeline data="timelineData" options="timelineOpts"></vis-timeline>
+      <div id="festival-timeline">
+      </div>
+
+
+      <div id="performances-list-container">
+        <ion-alpha-scroll id="performances-list" ng-model="performances" key="name">
+          <div>{{item.name}}</div>
+        </ion-alpha-scroll>
+      </div>
 
   </ion-content>
 </ion-view>

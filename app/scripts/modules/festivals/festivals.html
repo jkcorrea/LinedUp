@@ -7,7 +7,7 @@
   <ion-content>
     <!-- content goes here -->
     <br>
-    <ion-list class="festivals-list" ng-if="festivals && festivals.length > 0">
+    <ion-list id="my-festivals-list" ng-if="festivals && festivals.length > 0">
       <ion-item
         collection-repeat="f in festivals"
         class="item-remove-animate"
