@@ -4,7 +4,31 @@
   <ion-content>
     <!-- content goes here -->
     <ion-list class="landmarks-list" ng-if="landmarks && landmarks.length > 0">
-      <ion-item ng-repeat="landmark in landmarks">
+      <ion-item class="item item-divider">
+        Stage
+      </ion-item>
+      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Stage'">
+        {{landmark.get('name')}}
+      </ion-item>
+
+      <ion-item class="item item-divider">
+        Food
+      </ion-item>
+      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Food'">
+        {{landmark.get('name')}}
+      </ion-item>
+
+      <ion-item class="item item-divider">
+        Drinks
+      </ion-item>
+      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Drink'">
+        {{landmark.get('name')}}
+      </ion-item>
+
+      <ion-item class="item item-divider">
+        Charging Station
+      </ion-item>
+      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Charge'">
         {{landmark.get('name')}}
       </ion-item>
     </ion-list>
