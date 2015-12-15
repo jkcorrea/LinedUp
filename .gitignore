@@ -4,6 +4,9 @@
 .sass-cache
 *.log
 
+# App secrets
+.env
+
 # Ignore packages - use npm/bower to pull them on each clone
 /node_modules/
 /app/bower_components/

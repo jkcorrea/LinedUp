@@ -1,17 +1,26 @@
-<!DOCTYPE html>
-<html>
+var _ = require('lodash');
+var http = require('http');
+var async = require('async');
+var Parse = require('parse/node');
+var rl = require('readline').createInterface({ input: process.stdin, output: process.stdout });
+var SpotifyWebApi = require('spotify-web-api-node');
+require('dotenv').load();
 
-<body>
+// For potential usage later on...
+// var program = require('commander');
+// program
+//   .version('0.0.1')
+//   .option('-f', '--festival <name>', 'Populate for specified festival (default: coachella)')
+//   .parse(process.argv);
 
-<button type="button" onclick="populateForCoachella()">Populate For Coachella</button>
+var spotify = new SpotifyWebApi({
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_SECRET_KEY
+});
 
-<script src="app/bower_components/lodash/lodash.min.js"></script>
-<script src="app/bower_components/parse/parse.min.js"></script>
-
-<script>
 Parse.initialize('7QWvetVv8YZmDkQ1zCM7KLADoCcMOZ3mCJHGNpo9', 't2jFEQ6b6fJF7DxYKteRYFdWS28Mve3LzaCgSHok');
-
-var fail = function(err) { console.log("Error saving data", err); };
+var spotifyBaseURL = 'https://api.spotify.com/v1/search?type=artist&limit=1&q=';
+var BACKUP_AVATAR = 'https://i.scdn.co/image/837c977024362a7f6d1873027e2a8664e21f911a';
 
 var Festival = Parse.Object.extend('Festival')
   , Performance = Parse.Object.extend('Performance')
@@ -197,7 +206,7 @@ var artists = [
     new Artist({'name': 'Squarepusher'}),
 
     // Stage 4
-    new Artist({'name': 'Freddy Be'}),
+    new Artist({'name': 'Freddy Bear'}),
     new Artist({'name': 'Marques Wyatt'}),
     new Artist({'name': 'Lee Foss'}),
     new Artist({'name': 'Chris Malinchak'}),
@@ -208,7 +217,7 @@ var artists = [
 
   // Day 2
     // Stage 1
-    new Artist({'name': 'Bostich'}),
+    new Artist({'name': 'Bostich+Fussible'}),
     new Artist({'name': 'Clean Bandit'}),
     new Artist({'name': 'Bad Religion'}),
     new Artist({'name': 'Milky Chance'}),
@@ -218,7 +227,7 @@ var artists = [
     new Artist({'name': 'The Weeknd'}),
 
     // Stage 2
-    new Artist({'name': 'Mantastique'}),
+    new Artist({'name': 'SOJA'}),
     new Artist({'name': 'PHOX'}),
     new Artist({'name': 'Jamestown Revival'}),
     new Artist({'name': 'Perfume Genius'}),
@@ -243,18 +252,18 @@ var artists = [
     new Artist({'name': 'The Gaslamp Killer'}),
 
     // Stage 4
-    new Artist({'name': 'Mor Eian'}),
+    new Artist({'name': 'Ben Howard'}),
     new Artist({'name': 'Lauren Lane'}),
     new Artist({'name': 'Andrew Olivia'}),
     new Artist({'name': 'Tale of Us'}),
     new Artist({'name': 'Carl Craig'}),
     new Artist({'name': 'DJ Harvey'}),
-    new Artist({'name': 'Luco Dice'}),
+    new Artist({'name': 'Cris Cab'}),
     new Artist({'name': 'Annie Mac'}),
 
   // Day 3
     // Stage 1
-    new Artist({'name': 'Jimbo Jenkins'}),
+    new Artist({'name': 'Blue Scholars'}),
     new Artist({'name': 'Saint Motel'}),
     new Artist({'name': 'Circa Survive'}),
     new Artist({'name': 'St. Lucia'}),
@@ -283,7 +292,7 @@ var artists = [
     new Artist({'name': 'Sturgil Simpson'}),
     new Artist({'name': 'Desaparecidos'}),
     new Artist({'name': 'The Cribs'}),
-    new Artist({'name': 'Phillip Selway'}),
+    new Artist({'name': 'Meek Mill'}),
     new Artist({'name': 'Jamie xx'}),
     new Artist({'name': 'ODESZA'}),
     new Artist({'name': 'Kaytranada'}),
@@ -294,13 +303,45 @@ var artists = [
     new Artist({'name': 'tINI'}),
     new Artist({'name': 'Tiger and Woods'}),
     new Artist({'name': 'John Talabot'}),
-    new Artist({'name': 'Jason Bentley'}),
+    new Artist({'name': 'The Cool Kids'}),
     new Artist({'name': 'Guy Gerber'}),
     new Artist({'name': 'J.E.S.+S.'}),
 ];
 
+var progress = 0;
+function fetchArtistAvatar(artist, cb) {
+  console.log('Fetching avatar for ' + artist.get('name') + '.. (' + _.floor(100 * ((progress++) / artists.length)) + '%)');
+  spotify.searchArtists(artist.get('name')).then(
+    function(data) {
+      // Get the band's avatars, default to one if none exist
+      var avatars = _.get(data, 'body.artists.items[0].images', [{url: BACKUP_AVATAR}]);
 
-function populateForCoachella() {
+      var avatar = _(avatars).take(3).last().url || BACKUP_AVATAR;
+      // It seems as though spotify orders the images from big to small
+      // images[3+] seemed too small, so go from 2 -> 0
+      artist.set('avatar', avatar);
+      cb(null);
+    },
+    function(err) { cb(err); }
+  );
+}
+
+function finishedAvatarFetch(err) {
+  if (err) { console.log('Could not fetch artist avatars.', err); process.exit(1); }
+
+  rl.question('Loaded data for Coachella, are you sure you want to save it to Parse? ([y]/n)\n', function(answer) {
+    if (answer.toLowerCase() !== 'y') {
+      console.log('Exiting... Bye!');
+      process.exit(1);
+    }
+
+    console.log('Continuing...');
+    populate();
+  });
+}
+
+// Gather all festival-related data and save it into Parse
+function populate() {
   var promisesPhase1 = [],
       promisesPhase2 = [];
 
@@ -317,22 +358,20 @@ function populateForCoachella() {
 
   // Phase 2: When festival and artists saved, save performances with relations
   Parse.Promise.when(promisesPhase1).then(function(saved_artists, saved_festival) {
-      debugger;
     _.forEach(performances, function(perf, index) {
       perf.set('artist', saved_artists[index]);
       perf.set('festival', saved_festival);
       promisesPhase2.push(perf.save());
     });
-  });
 
-  Parse.Promise.when(promisesPhase2).then(function() {
-    alert("Database populated for Coachella");
+    Parse.Promise.when(promisesPhase2).then(function() {
+      console.log('Database populated for Coachella');
+      process.exit(0);
+    });
   });
 }
 
 
-
-</script>
-
-</body>
-</html>
+// Begin.
+// Load spotify API data for each artist, then populate() when done
+async.eachSeries(artists, fetchArtistAvatar, finishedAvatarFetch);
