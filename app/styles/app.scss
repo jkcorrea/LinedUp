@@ -26,9 +26,10 @@
   flex-direction: column;
 
   #festival-timeline {
+    position: relative;
     flex: 3;
-    display: flex;
-    flex-direction: column;
+
+    .vis-timeline { position: absolute; height: 100% !important; width: 100%; border: none; }
   }
 
   #performances-list-container {
@@ -44,4 +45,9 @@
     }
   }
 
+}
+
+
+.vis-timeline {
+  border: none;
 }

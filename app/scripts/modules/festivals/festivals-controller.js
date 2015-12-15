@@ -14,6 +14,8 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
 
     // Set up the timeline
       var timelineContainer = document.getElementById('festival-timeline');
+      var ZOOM_MIN = 4 * 3600000;
+      var MAX_ZOOM_SHOW_MINOR = 89161006;
       // var dataSet = new VisDataSet();
       // dataSet.add({
       //   "1": {
@@ -29,10 +31,24 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
       timelineOpts = {
         min: festival.get("start") || "",
         max: festival.get("end") || "",
-        height: 250
+        timeAxis: { scale: 'hour', step: 3 },
+        format: {
+          minorLabels: { hour: 'ha' },
+          majorLabels: { day: 'ddd' }
+        },
+        showMinorLabels: false,
+        zoomMin: ZOOM_MIN, // 4 hours converted to ms
       };
 
       var timeline = new vis.Timeline(timelineContainer, timelineData, timelineOpts);
+      timeline.on('rangechange', function(e) {
+        var zoomLevel = e.end - e.start;
+        if (zoomLevel <= MAX_ZOOM_SHOW_MINOR) {
+          timeline.setOptions({ showMinorLabels: true });
+        } else if (zoomLevel > MAX_ZOOM_SHOW_MINOR) {
+          timeline.setOptions({ showMinorLabels: false });
+        }
+      });
 
     // Other view data
       $scope.festival = festival;
