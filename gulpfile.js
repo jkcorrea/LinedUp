@@ -26,7 +26,7 @@ var paths = {
     build: './www/fonts/'
   },
   img: {
-    src: ['./app/bower_components/vis/dist/img/**/*'],
+    src: ['./app/bower_components/vis/dist/img/**/*', './app/img/**/*'],
     build: './www/img/'
   },
   html: {
