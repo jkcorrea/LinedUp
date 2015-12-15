@@ -25,7 +25,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService) {
       index();
       break;
   }
-}
+};
 
 module.exports = angular.module('festivals', [])
 .controller('FestivalsController', [

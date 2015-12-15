@@ -29,6 +29,24 @@ function AppRouter ($stateProvider, $urlRouterProvider) {
           }
         }
       })
+      .state('main.map', {
+        url: '/map',
+        views: {
+          'pageContent': {
+            templateUrl: getTemplateUrl('map'),
+            controller: 'MapController as map'
+          }
+        }
+      })
+      .state('main.landmarks', {
+        url: '/landmarks',
+        views: {
+          'pageContent': {
+            templateUrl: getTemplateUrl('landmarks'),
+            controller: 'LandmarksController as landmarks'
+          }
+        }
+      })
       .state('main.debug', {
         url: '/debug',
         views: {
