@@ -24,3 +24,5 @@ module.exports = angular.module('LinedUp', [
 .constant('Config', require('./constants/config-const'))
 .config(require('./router'))
 .run(require('./app-main'));
+
+require('./directives');
