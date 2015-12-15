@@ -43,6 +43,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
       var timeline = new vis.Timeline(timelineContainer, timelineData, timelineOpts);
       timeline.on('rangechange', function(e) {
         var zoomLevel = e.end - e.start;
+        console.log(zoomLevel);
         if (zoomLevel <= MAX_ZOOM_SHOW_MINOR) {
           timeline.setOptions({ showMinorLabels: true });
         } else if (zoomLevel > MAX_ZOOM_SHOW_MINOR) {
