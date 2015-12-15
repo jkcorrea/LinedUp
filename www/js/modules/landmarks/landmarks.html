@@ -3,8 +3,13 @@
 
   <ion-content>
     <!-- content goes here -->
-
+    <ion-list class="landmarks-list" ng-if="landmarks && landmarks.length > 0">
+      <ion-item ng-repeat="landmark in landmarks">
+        {{landmark.get('name')}}
+      </ion-item>
+    </ion-list>
   </ion-content>
+
   <ion-footer-bar class="tabs tabs-icon-top">
     <a class="tab-item" ui-sref="main.map">
       <i class="icon ion-map"></i>

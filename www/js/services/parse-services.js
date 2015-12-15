@@ -32,5 +32,40 @@ function FestivalService($q) {
   };
 }
 
+function LandmarkService($q) {
+  this.saveLandmark = function(landmark) {
+  };
+
+  this.searchLandmarks = function(query) {
+  };
+
+  this.getLandmarks = function() {
+    var landmarkQuery = new Parse.Query(Parse.Object.extend('Landmark'));
+    var deferred = $q.defer();
+
+    landmarkQuery.find({
+      success: function(landmarks) { deferred.resolve(landmarks); },
+      error: function(err) { deferred.reject(err); },
+    });
+
+    return deferred.promise;
+  };
+
+  this.getLandmark = function(id) {
+    var landmarkQuery = new Parse.Query(Parse.Object.extend('Landmark'));
+    var deferred = $q.defer();
+
+    landmarkQuery.get(id, {
+      success: function(landmark) { deferred.resolve(landmark); },
+      error: function(err) { deferred.reject(err); },
+    });
+
+    return deferred.promise;
+  };
+}
+
 module.exports = angular.module('parseServices', [])
 .service('FestivalService', ['$q', FestivalService]);
+
+module.exports = angular.module('parseServices', [])
+.service('LandmarkService', ['$q', LandmarkService]);
