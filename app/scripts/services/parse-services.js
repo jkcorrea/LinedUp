@@ -1,3 +1,7 @@
+var Artist = Parse.Object.extend('Artist')
+  , Festival = Parse.Object.extend('Festival')
+  , Performance = Parse.Object.extend('Performance');
+
 function FestivalService($q) {
   this.saveFestival = function(festival) {
     // return $http.post('/festivals', festival);s
@@ -8,7 +12,7 @@ function FestivalService($q) {
   };
 
   this.getFestivals = function() {
-    var festivalQuery = new Parse.Query(Parse.Object.extend('Festival'));
+    var festivalQuery = new Parse.Query(Festival);
     var deferred = $q.defer();
 
     festivalQuery.find({
@@ -20,7 +24,7 @@ function FestivalService($q) {
   };
 
   this.getFestival = function(id) {
-    var festivalQuery = new Parse.Query(Parse.Object.extend('Festival'));
+    var festivalQuery = new Parse.Query(Festival);
     var deferred = $q.defer();
 
     festivalQuery.get(id, {
@@ -33,19 +37,18 @@ function FestivalService($q) {
 }
 
 function PerformanceService($q) {
-  this.getPerformancesForFestival = function(id) {
-    return [
-      {  id: 0, name: "A Band 0" },
-      {  id: 1, name: "B Band 1" },
-      {  id: 2, name: "C Band 2" },
-      {  id: 3, name: "C Band 3" },
-      {  id: 4, name: "C Band 4" },
-      {  id: 5, name: "D Band 5" },
-      {  id: 6, name: "E Band 6" },
-      {  id: 7, name: "O Band 7" },
-      {  id: 8, name: "P Band 8" },
-      {  id: 9, name: "W Band 9" }
-    ];
+  this.getPerformancesForFestival = function(festival) {
+    var performanceQuery = new Parse.Query(Performance);
+    performanceQuery.equalTo('festival', festival);
+    performanceQuery.include('artist');
+    var deferred = $q.defer();
+
+    performanceQuery.find({
+      success: function(performances) { deferred.resolve(performances); },
+      error: function(err) { deferred.reject(err); }
+    });
+
+    return deferred.promise;
   };
 }
 

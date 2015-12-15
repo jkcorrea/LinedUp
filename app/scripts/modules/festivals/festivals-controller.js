@@ -1,14 +1,14 @@
 function FestivalsController($scope, $state, $stateParams, FestivalService, PerformanceService, $ionicFilterBar) {
   console.log('Hello from your Controller: FestivalsCtrl in module main:. This is your controller:', this);
-  var fail = function(msg) { throw "Could not retrieve festival(s): ", msg; };
+  var fail = function(model, err) { throw "Could not retrieve "+(model||'festival')+"(s): ", err; };
 
   var show = function(festival) {
     // Configure the Filter/Search Bar
       var filterBarInstance;
       $scope.showFilterBar = function() {
         filterBarInstance = $ionicFilterBar.show({
-          items: $scope.performances,
-          update: function(filteredItems, filterText) { $scope.performances = filteredItems; }
+          items: $scope.artists,
+          update: function(filteredItems, filterText) { $scope.artists = filteredItems; }
         });
       };
 
@@ -53,7 +53,14 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
 
     // Other view data
       $scope.festival = festival;
-      $scope.performances = PerformanceService.getPerformancesForFestival(0);
+      PerformanceService.getPerformancesForFestival(festival)
+        .then(function(performances) {
+          //performances;
+          $scope.artists = performances.map(function(p) {
+            var a = p.get('artist');
+            return { name: a.get('name'), avatar: a.get('avatar') };
+          });
+        }, fail.bind(null, 'performance'));
   };
 
   var index = function(festivals) { $scope.festivals = festivals; };
@@ -81,8 +88,3 @@ module.exports = angular.module('festivals', [])
   '$ionicFilterBar',
   FestivalsController
 ]);
-
-    // var performance = Parse.Object.extend("Performance");
-    // var festival = Parse.Object.extend("Festival");
-    // var relation = festival.relation("performances");
-    // relation.add(performance);
