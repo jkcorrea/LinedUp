@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<script src="../app/bower_components/lodash/lodash.min.js"></script>
+<script src="../app/bower_components/parse/parse.min.js"></script>
+
+<script>
+Parse.initialize('7QWvetVv8YZmDkQ1zCM7KLADoCcMOZ3mCJHGNpo9', 't2jFEQ6b6fJF7DxYKteRYFdWS28Mve3LzaCgSHok');
+
+var fail = function(err) { console.log("Error saving data", err); };
+
+var promisesPhase1 = [],
+    promisesPhase2 = [],
+    promisesPhase3 = [];
+
+var Festival = Parse.Object.extend('Festival')
+  , Performance = Parse.Object.extend('Performance')
+  , Artist = Parse.Object.extend('Artist');
+
+var PerformanceCollection = Parse.Collection.extend({ model: Performance })
+  , ArtistCollection = Parse.Collection.extend({ model: Artist });
+
+var festival = new Festival();
+
+var performances = new PerformanceCollection([
+  // Day 1
+    // Stage 1
+    {'start': new Date(2015, 4, 17, 13, 15), 'end': new Date(2015, 4, 17, 14, 00)},
+    {'start': new Date(2015, 4, 17, 14, 25), 'end': new Date(2015, 4, 17, 15, 15)},
+    {'start': new Date(2015, 4, 17, 15, 40), 'end': new Date(2015, 4, 17, 16, 30)},
+    {'start': new Date(2015, 4, 17, 16, 55), 'end': new Date(2015, 4, 17, 17, 40)},
+    {'start': new Date(2015, 4, 17, 18, 05), 'end': new Date(2015, 4, 17, 18, 55)},
+    {'start': new Date(2015, 4, 17, 19, 20), 'end': new Date(2015, 4, 17, 20, 10)},
+    {'start': new Date(2015, 4, 17, 21, 15), 'end': new Date(2015, 4, 17, 22, 05)},
+    {'start': new Date(2015, 4, 17, 22, 35), 'end': new Date(2015, 4, 17, 23, 35)},
+
+    // Stage 2
+    {'start': new Date(2015, 4, 17, 11, 15), 'end': new Date(2015, 4, 17, 11, 45)},
+    {'start': new Date(2015, 4, 17, 11, 55), 'end': new Date(2015, 4, 17, 12, 35)},
+    {'start': new Date(2015, 4, 17, 12, 55), 'end': new Date(2015, 4, 17, 13, 35)},
+    {'start': new Date(2015, 4, 17, 14, 05), 'end': new Date(2015, 4, 17, 14, 45)},
+    {'start': new Date(2015, 4, 17, 15, 05), 'end': new Date(2015, 4, 17, 15, 55)},
+    {'start': new Date(2015, 4, 17, 16, 20), 'end': new Date(2015, 4, 17, 17, 10)},
+    {'start': new Date(2015, 4, 17, 17, 40), 'end': new Date(2015, 4, 17, 18, 30)},
+    {'start': new Date(2015, 4, 17, 18, 55), 'end': new Date(2015, 4, 17, 19, 45)},
+    {'start': new Date(2015, 4, 17, 20, 10), 'end': new Date(2015, 4, 17, 21, 10)},
+    {'start': new Date(2015, 4, 17, 21, 35), 'end': new Date(2015, 4, 17, 22, 35)},
+
+    // Stage 3
+    {'start': new Date(2015, 4, 17, 11, 15), 'end': new Date(2015, 4, 17, 11, 50)},
+    {'start': new Date(2015, 4, 17, 12, 00), 'end': new Date(2015, 4, 17, 12, 45)},
+    {'start': new Date(2015, 4, 17, 12, 55), 'end': new Date(2015, 4, 17, 13, 35)},
+    {'start': new Date(2015, 4, 17, 13, 55), 'end': new Date(2015, 4, 17, 14, 40)},
+    {'start': new Date(2015, 4, 17, 15, 00), 'end': new Date(2015, 4, 17, 15, 50)},
+    {'start': new Date(2015, 4, 17, 16, 15), 'end': new Date(2015, 4, 17, 17, 00)},
+    {'start': new Date(2015, 4, 17, 17, 30), 'end': new Date(2015, 4, 17, 18, 20)},
+    {'start': new Date(2015, 4, 17, 18, 50), 'end': new Date(2015, 4, 17, 19, 40)},
+    {'start': new Date(2015, 4, 17, 20, 10), 'end': new Date(2015, 4, 17, 20, 55)},
+    {'start': new Date(2015, 4, 17, 21, 25), 'end': new Date(2015, 4, 17, 22, 20)},
+    {'start': new Date(2015, 4, 17, 22, 50), 'end': new Date(2015, 4, 17, 23, 50)},
+
+    // Stage 4
+    {'start': new Date(2015, 4, 17, 13, 00), 'end': new Date(2015, 4, 17, 13, 40)},
+    {'start': new Date(2015, 4, 17, 14, 15), 'end': new Date(2015, 4, 17, 15, 00)},
+    {'start': new Date(2015, 4, 17, 15, 30), 'end': new Date(2015, 4, 17, 16, 35)},
+    {'start': new Date(2015, 4, 17, 16, 45), 'end': new Date(2015, 4, 17, 17, 30)},
+    {'start': new Date(2015, 4, 17, 18, 00), 'end': new Date(2015, 4, 17, 19, 00)},
+    {'start': new Date(2015, 4, 17, 19, 15), 'end': new Date(2015, 4, 17, 20, 25)},
+    {'start': new Date(2015, 4, 17, 20, 35), 'end': new Date(2015, 4, 17, 21, 55)},
+    {'start': new Date(2015, 4, 17, 22, 05), 'end': new Date(2015, 4, 17, 23, 00)},
+
+  // Day 2
+    // Stage 1
+    {'start': new Date(2015, 4, 18, 13, 15), 'end': new Date(2015, 4, 18, 14, 00)},
+    {'start': new Date(2015, 4, 18, 14, 25), 'end': new Date(2015, 4, 18, 15, 15)},
+    {'start': new Date(2015, 4, 18, 15, 40), 'end': new Date(2015, 4, 18, 16, 30)},
+    {'start': new Date(2015, 4, 18, 16, 55), 'end': new Date(2015, 4, 18, 17, 40)},
+    {'start': new Date(2015, 4, 18, 18, 05), 'end': new Date(2015, 4, 18, 18, 55)},
+    {'start': new Date(2015, 4, 18, 19, 20), 'end': new Date(2015, 4, 18, 20, 10)},
+    {'start': new Date(2015, 4, 18, 21, 15), 'end': new Date(2015, 4, 18, 22, 05)},
+    {'start': new Date(2015, 4, 18, 22, 35), 'end': new Date(2015, 4, 18, 23, 35)},
+
+    // Stage 2
+    {'start': new Date(2015, 4, 18, 11, 15), 'end': new Date(2015, 4, 18, 11, 45)},
+    {'start': new Date(2015, 4, 18, 11, 55), 'end': new Date(2015, 4, 18, 12, 35)},
+    {'start': new Date(2015, 4, 18, 12, 55), 'end': new Date(2015, 4, 18, 13, 35)},
+    {'start': new Date(2015, 4, 18, 14, 05), 'end': new Date(2015, 4, 18, 14, 45)},
+    {'start': new Date(2015, 4, 18, 15, 05), 'end': new Date(2015, 4, 18, 15, 55)},
+    {'start': new Date(2015, 4, 18, 16, 20), 'end': new Date(2015, 4, 18, 17, 10)},
+    {'start': new Date(2015, 4, 18, 17, 40), 'end': new Date(2015, 4, 18, 18, 30)},
+    {'start': new Date(2015, 4, 18, 18, 55), 'end': new Date(2015, 4, 18, 19, 45)},
+    {'start': new Date(2015, 4, 18, 20, 10), 'end': new Date(2015, 4, 18, 21, 10)},
+    {'start': new Date(2015, 4, 18, 21, 35), 'end': new Date(2015, 4, 18, 22, 35)},
+
+    // Stage 3
+    {'start': new Date(2015, 4, 18, 11, 15), 'end': new Date(2015, 4, 18, 11, 50)},
+    {'start': new Date(2015, 4, 18, 12, 00), 'end': new Date(2015, 4, 18, 12, 45)},
+    {'start': new Date(2015, 4, 18, 12, 55), 'end': new Date(2015, 4, 18, 13, 35)},
+    {'start': new Date(2015, 4, 18, 13, 55), 'end': new Date(2015, 4, 18, 14, 40)},
+    {'start': new Date(2015, 4, 18, 15, 00), 'end': new Date(2015, 4, 18, 15, 50)},
+    {'start': new Date(2015, 4, 18, 16, 15), 'end': new Date(2015, 4, 18, 17, 00)},
+    {'start': new Date(2015, 4, 18, 17, 30), 'end': new Date(2015, 4, 18, 18, 20)},
+    {'start': new Date(2015, 4, 18, 18, 50), 'end': new Date(2015, 4, 18, 19, 40)},
+    {'start': new Date(2015, 4, 18, 20, 10), 'end': new Date(2015, 4, 18, 20, 55)},
+    {'start': new Date(2015, 4, 18, 21, 25), 'end': new Date(2015, 4, 18, 22, 20)},
+    {'start': new Date(2015, 4, 18, 22, 50), 'end': new Date(2015, 4, 18, 23, 50)},
+
+    // Stage 4
+    {'start': new Date(2015, 4, 18, 13, 00), 'end': new Date(2015, 4, 18, 13, 40)},
+    {'start': new Date(2015, 4, 18, 14, 15), 'end': new Date(2015, 4, 18, 15, 00)},
+    {'start': new Date(2015, 4, 18, 15, 30), 'end': new Date(2015, 4, 18, 16, 35)},
+    {'start': new Date(2015, 4, 18, 16, 45), 'end': new Date(2015, 4, 18, 17, 30)},
+    {'start': new Date(2015, 4, 18, 18, 00), 'end': new Date(2015, 4, 18, 19, 00)},
+    {'start': new Date(2015, 4, 18, 19, 15), 'end': new Date(2015, 4, 18, 20, 25)},
+    {'start': new Date(2015, 4, 18, 20, 35), 'end': new Date(2015, 4, 18, 21, 55)},
+    {'start': new Date(2015, 4, 18, 22, 05), 'end': new Date(2015, 4, 18, 23, 00)},
+
+  // Day 3
+    // Stage 1
+    {'start': new Date(2015, 4, 19, 13, 15), 'end': new Date(2015, 4, 19, 14, 00)},
+    {'start': new Date(2015, 4, 19, 14, 25), 'end': new Date(2015, 4, 19, 15, 15)},
+    {'start': new Date(2015, 4, 19, 15, 40), 'end': new Date(2015, 4, 19, 16, 30)},
+    {'start': new Date(2015, 4, 19, 16, 55), 'end': new Date(2015, 4, 19, 17, 40)},
+    {'start': new Date(2015, 4, 19, 18, 05), 'end': new Date(2015, 4, 19, 18, 55)},
+    {'start': new Date(2015, 4, 19, 19, 20), 'end': new Date(2015, 4, 19, 20, 10)},
+    {'start': new Date(2015, 4, 19, 21, 15), 'end': new Date(2015, 4, 19, 22, 05)},
+    {'start': new Date(2015, 4, 19, 22, 35), 'end': new Date(2015, 4, 19, 23, 35)},
+
+    // Stage 2
+    {'start': new Date(2015, 4, 19, 11, 15), 'end': new Date(2015, 4, 19, 11, 45)},
+    {'start': new Date(2015, 4, 19, 11, 55), 'end': new Date(2015, 4, 19, 12, 35)},
+    {'start': new Date(2015, 4, 19, 12, 55), 'end': new Date(2015, 4, 19, 13, 35)},
+    {'start': new Date(2015, 4, 19, 14, 05), 'end': new Date(2015, 4, 19, 14, 45)},
+    {'start': new Date(2015, 4, 19, 15, 05), 'end': new Date(2015, 4, 19, 15, 55)},
+    {'start': new Date(2015, 4, 19, 16, 20), 'end': new Date(2015, 4, 19, 17, 10)},
+    {'start': new Date(2015, 4, 19, 17, 40), 'end': new Date(2015, 4, 19, 18, 30)},
+    {'start': new Date(2015, 4, 19, 18, 55), 'end': new Date(2015, 4, 19, 19, 45)},
+    {'start': new Date(2015, 4, 19, 20, 10), 'end': new Date(2015, 4, 19, 21, 10)},
+    {'start': new Date(2015, 4, 19, 21, 35), 'end': new Date(2015, 4, 19, 22, 35)},
+
+    // Stage 3
+    {'start': new Date(2015, 4, 19, 11, 15), 'end': new Date(2015, 4, 19, 11, 50)},
+    {'start': new Date(2015, 4, 19, 12, 00), 'end': new Date(2015, 4, 19, 12, 45)},
+    {'start': new Date(2015, 4, 19, 12, 55), 'end': new Date(2015, 4, 19, 13, 35)},
+    {'start': new Date(2015, 4, 19, 13, 55), 'end': new Date(2015, 4, 19, 14, 40)},
+    {'start': new Date(2015, 4, 19, 15, 00), 'end': new Date(2015, 4, 19, 15, 50)},
+    {'start': new Date(2015, 4, 19, 16, 15), 'end': new Date(2015, 4, 19, 17, 00)},
+    {'start': new Date(2015, 4, 19, 17, 30), 'end': new Date(2015, 4, 19, 18, 20)},
+    {'start': new Date(2015, 4, 19, 18, 50), 'end': new Date(2015, 4, 19, 19, 40)},
+    {'start': new Date(2015, 4, 19, 20, 10), 'end': new Date(2015, 4, 19, 20, 55)},
+    {'start': new Date(2015, 4, 19, 21, 25), 'end': new Date(2015, 4, 19, 22, 20)},
+    {'start': new Date(2015, 4, 19, 22, 50), 'end': new Date(2015, 4, 19, 23, 50)},
+
+    // Stage 4
+    {'start': new Date(2015, 4, 19, 13, 00), 'end': new Date(2015, 4, 19, 13, 40)},
+    {'start': new Date(2015, 4, 19, 14, 15), 'end': new Date(2015, 4, 19, 15, 00)},
+    {'start': new Date(2015, 4, 19, 15, 30), 'end': new Date(2015, 4, 19, 16, 35)},
+    {'start': new Date(2015, 4, 19, 16, 45), 'end': new Date(2015, 4, 19, 17, 30)},
+    {'start': new Date(2015, 4, 19, 18, 00), 'end': new Date(2015, 4, 19, 19, 00)},
+    {'start': new Date(2015, 4, 19, 19, 15), 'end': new Date(2015, 4, 19, 20, 25)},
+    {'start': new Date(2015, 4, 19, 20, 35), 'end': new Date(2015, 4, 19, 21, 55)},
+    {'start': new Date(2015, 4, 19, 22, 05), 'end': new Date(2015, 4, 19, 23, 00)},
+]);
+
+
+var artists = new ArtistCollection([
+  // Day 1
+    // Stage 1
+    {'name': 'Vic Mensa'},
+    {'name': 'Action Bronson'},
+    {'name': 'Charles Bradley'},
+    {'name': 'Azealia Banks'},
+    {'name': 'The War on Drugs'},
+    {'name': 'Interpol'},
+    {'name': 'Tame Impala'},
+    {'name': 'AC/DC'},
+
+    // Stage 2
+    {'name': 'Alchemy'},
+    {'name': 'Saber Tooth Tiger'},
+    {'name': 'Brant Bjork'},
+    {'name': 'Allah-Las'},
+    {'name': 'Lil B'},
+    {'name': 'Angus & Julia Stone'},
+    {'name': 'Raekwon'},
+    {'name': 'Alabama Shakes'},
+    {'name': 'Steely Dan'},
+    {'name': 'Nero'},
+
+    // Stage 3
+    {'name': 'Moustache'},
+    {'name': 'Ruen Brothers'},
+    {'name': 'Eagulls'},
+    {'name': 'Cloud Nothings'},
+    {'name': 'Ab-Soul'},
+    {'name': 'Kimbra'},
+    {'name': 'Ride'},
+    {'name': 'Hot Natured'},
+    {'name': 'Gorgon City'},
+    {'name': 'Todd Terje'},
+    {'name': 'Squarepusher'},
+
+    // Stage 4
+    {'name': 'Freddy Be'},
+    {'name': 'Marques Wyatt'},
+    {'name': 'Lee Foss'},
+    {'name': 'Chris Malinchak'},
+    {'name': 'Erol Alkan'},
+    {'name': 'Jon Hopkins'},
+    {'name': 'Pete Tong'},
+    {'name': 'MK'},
+
+  // Day 2
+    // Stage 1
+    {'name': 'Bostich'},
+    {'name': 'Clean Bandit'},
+    {'name': 'Bad Religion'},
+    {'name': 'Milky Chance'},
+    {'name': 'Hozier'},
+    {'name': 'alt-J'},
+    {'name': 'Jack White'},
+    {'name': 'The Weeknd'},
+
+    // Stage 2
+    {'name': 'Mantastique'},
+    {'name': 'PHOX'},
+    {'name': 'Jamestown Revival'},
+    {'name': 'Perfume Genius'},
+    {'name': 'Royal Blood'},
+    {'name': 'Chet Faker'},
+    {'name': 'John Misty'},
+    {'name': 'Tyler the Creator'},
+    {'name': 'Flosstradamus'},
+    {'name': 'Axwell'},
+
+    // Stage 3
+    {'name': 'Coasts'},
+    {'name': 'Parquet Courts'},
+    {'name': 'Lights'},
+    {'name': 'Benjamin Booker'},
+    {'name': 'Cashmere Cat'},
+    {'name': 'Yelle'},
+    {'name': 'Glass Animals'},
+    {'name': 'FKA twigs'},
+    {'name': 'Drive Like Jehu'},
+    {'name': 'Swans'},
+    {'name': 'The Gaslamp Killer'},
+
+    // Stage 4
+    {'name': 'Mor Eian'},
+    {'name': 'Lauren Lane'},
+    {'name': 'Andrew Olivia'},
+    {'name': 'Tale of Us'},
+    {'name': 'Carl Craig'},
+    {'name': 'DJ Harvey'},
+    {'name': 'Luco Dice'},
+    {'name': 'Annie Mac'},
+
+  // Day 3
+    // Stage 1
+    {'name': 'Jimbo Jenkins'},
+    {'name': 'Saint Motel'},
+    {'name': 'Circa Survive'},
+    {'name': 'St. Lucia'},
+    {'name': 'Marina Diamonds'},
+    {'name': 'Kaskade'},
+    {'name': 'Florence + the Machine'},
+    {'name': 'Drake'},
+
+    // Stage 2
+    {'name': 'Gabe Real'},
+    {'name': 'Chicano Batman'},
+    {'name': 'Joyce Manor'},
+    {'name': 'Mac DeMarco'},
+    {'name': 'Built to Spill'},
+    {'name': 'Jenny Lewis'},
+    {'name': 'Ryan Adams'},
+    {'name': 'St. Vincent'},
+    {'name': 'Fitz & the Tantrums'},
+    {'name': 'David Guetta'},
+
+    // Stage 3
+    {'name': 'Eevaan tre'},
+    {'name': 'Night Terrors'},
+    {'name': 'Angel Olsen'},
+    {'name': 'M0'},
+    {'name': 'Sturgil Simpson'},
+    {'name': 'Desaparecidos'},
+    {'name': 'The Cribs'},
+    {'name': 'Phillip Selway'},
+    {'name': 'Jamie xx'},
+    {'name': 'ODESZA'},
+    {'name': 'Kaytranada'},
+
+    // Stage 4
+    {'name': 'Trent Cantrelle'},
+    {'name': 'Doc MArtin'},
+    {'name': 'tINI'},
+    {'name': 'Tiger and Woods'},
+    {'name': 'John Talabot'},
+    {'name': 'Jason Bentley'},
+    {'name': 'Guy Gerber'},
+    {'name': 'J.E.S.+S.'},
+]);
+
+// Phase 1: Save festival and artists
+_.forEach(artists, function(artist) { promisesPhase1.push(artist.save()); });
+promisesPhase1.push(festival.save({'name': 'Electric Daisy Carnival', 'shortName': 'EDC', 'banner': 'edc', 'start': '', 'end': ''}));
+
+// Phase 2: When festival and artists saved, save performances with relations
+Parse.Promise.when(promisesPhase1).then(function() {
+  _.forEach(performances, function(perf, index) {
+    debugger;
+    // perf.set('artist', arguments[index]);
+    // perf.set('')
+  });
+});
+
+
+
+
+// Pass 1: Save basic employee information
+// employees.each(function(employee) {
+//     promisesPhase1.push(employee.save());
+// });
+
+// // Pass 2: Set manager information and save
+// Parse.Promise.when(promisesPhase1).then(function() {
+//     employees.at(0).set("managerId", null);
+//     employees.at(1).set("managerId", employees.at(0).id);
+//     employees.at(2).set("managerId", employees.at(0).id);
+//     employees.at(3).set("managerId", employees.at(0).id);
+//     employees.at(4).set("managerId", employees.at(0).id);
+//     employees.at(5).set("managerId", employees.at(3).id);
+//     employees.at(6).set("managerId", employees.at(3).id);
+//     employees.at(7).set("managerId", employees.at(1).id);
+//     employees.at(8).set("managerId", employees.at(1).id);
+//     employees.at(9).set("managerId", employees.at(4).id);
+//     employees.at(10).set("managerId", employees.at(4).id);
+//     employees.at(11).set("managerId", employees.at(3).id);
+//     employees.each(function(employee) {
+//         promisesPhase2.push(employee.save());
+//     });
+// });
+
+// Parse.Promise.when(promisesPhase2).then(function() {
+//     alert("Database populated");
+// });
+
+</script>
+
+</body>
+</html>

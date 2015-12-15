@@ -22,6 +22,7 @@
     "parse": "~1.6.7",
     "ionic": "driftyco/ionic-bower#master",
     "ion-alpha-scroll": "~0.1.3",
-    "ionic-filter-bar": "~1.1.1"
+    "ionic-filter-bar": "~1.1.1",
+    "lodash": "~3.10.1"
   }
 }
