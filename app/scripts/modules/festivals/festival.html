@@ -14,14 +14,14 @@
 
       <div id="lineup-list-container">
 
-        <ion-alpha-scroll id="lineup-list" ng-model="lineup" key="name">
-          <div class="lineup-list-item" ng-click="addToTimeline(item)">
+        <ion-alpha-scroll id="lineup-list" ng-model="lineupItems" key="name">
+          <div class="lineup-list-item" ng-click="lineupChange(item, 'timeline')">
             <div class="artist-avatar" bg-img="{{item.avatar}}"></div>
             <div>{{item.name}}</div>
           </div>
         </ion-alpha-scroll>
 
-        <div ng-if="lineup !== undefined && !lineup.length" class="no-results">
+        <div ng-if="lineupItems !== undefined && !lineupItems.length" class="no-results">
           <h3>No artists found!</h3>
         </div>
 

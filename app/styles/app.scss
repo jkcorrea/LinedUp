@@ -29,6 +29,8 @@
     flex: 3;
 
     .vis-timeline { position: absolute; height: 100% !important; width: 100%; border: none; }
+    .vis-line, .vis-dot { display: none; }
+    .vis-item-content { font-size: 0.5rem; padding: 0 5px; }
   }
 
   #lineup-list-container {
@@ -40,7 +42,7 @@
 
     ul.ion_alpha_sidebar { position: absolute; li { line-height: 14px; } }
 
-    .artist-list-item {
+    .lineup-list-item {
       & > * { display: inline-block; }
 
       .artist-avatar {
