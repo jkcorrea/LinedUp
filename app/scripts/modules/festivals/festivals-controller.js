@@ -2,6 +2,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
   var fail = function(model, err) { throw "Could not retrieve "+(model||'festival')+"(s): ", err; };
 
   var show = function(festival) {
+    function cmpArtists(A, B) {var a=A.content, b=B.content;return a>b?1:(a<b?-1:0);}
     $scope.timelineItems = []
     $scope.lineupItems = [];
 
@@ -33,9 +34,15 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
         format: { minorLabels: { hour: 'ha' } },
         showMinorLabels: false,
         zoomMin: ZOOM_MIN, // 4 hours converted to ms
+        editable: { remove: true },
+        template: formatContent,
+        onRemove: removeFromTimeline,
       };
 
+
       var timeline = new vis.Timeline(timelineContainer, [], timelineGroups, timelineOpts);
+
+      // Show minor labels when zoomed in enough
       timeline.on('rangechange', function(e) {
         var zoomLevel = e.end - e.start;
         if (zoomLevel <= MAX_ZOOM_SHOW_MINOR) {
@@ -45,6 +52,20 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
         }
       });
 
+      function formatContent(item) {
+        return (
+            '<div class="artist-avatar" style="background-image: url(\''+item.avatar+'\'); background-size: cover;">'
+          + '</div>'
+          + '<div>' + item.name + '</div>'
+        );
+      }
+
+      // Deleting from timeline -> send back to lineup
+      function removeFromTimeline(item, cb) {
+        $scope.$apply(function(){$scope.lineupChange(item, 'lineup');});
+        cb(item);
+      }
+
     // Other view data
       $scope.festival = festival;
       PerformanceService.getPerformancesForFestival(festival)
@@ -52,25 +73,25 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
         var tmp_lineup =  performances.map(function(p) {
           return {
             // Lineup list data
-            name: p.get('artist').get('name'),
             avatar: p.get('artist').get('avatar'),
+            name: p.get('artist').get('name'),
             performance: p,
 
             // Vis Timeline data
             id: p.id,
-            content: p.get('artist').get('name'),
             start: p.get('start'),
             end: p.get('end'),
             className: 'magenta',
             type: 'box',
             group: p.get('stage')
           };
-        });
+        }).sort(cmpArtists);
         $scope.lineupItems = tmp_lineup;
       }, fail.bind(null, 'performance'));
 
     // User actions
       $scope.lineupChange = function(item, dest) {
+        function find(a, b, ix) { return (b.id === item.id) ? ix : a; }
         var tmp_lineup, tmp_timeline, tmp_item, ix;
         if (!dest || dest === 'timeline') {
           ix = $scope.lineupItems.indexOf(item);
@@ -79,11 +100,11 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
           tmp_lineup.splice(ix, 1);
           tmp_timeline = $scope.timelineItems.concat(tmp_item);
         } else {
-          ix = $scope.timelineItems.indexOf(item);
+          ix = $scope.timelineItems.reduce(find, 0);
           tmp_item = $scope.timelineItems[ix];
           tmp_timeline = $scope.timelineItems.slice(0);
           tmp_timeline.splice(ix, 1);
-          tmp_lineup = $scope.lineupItems.concat(tmp_item);
+          tmp_lineup = $scope.lineupItems.concat(tmp_item).sort(cmpArtists);
         }
 
         $scope.lineupItems = tmp_lineup;
@@ -117,3 +138,4 @@ module.exports = angular.module('festivals', [])
   '$ionicFilterBar',
   FestivalsController
 ]);
+
