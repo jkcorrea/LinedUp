@@ -1,13 +1,14 @@
 function FestivalsController($scope, $state, $stateParams, FestivalService, PerformanceService, $ionicFilterBar) {
-  var fail = function(model, err) { throw "Could not retrieve "+(model||'festival')+"(s): ", err; };
+  var fail = function(model,err){console.log("Could not retrieve "+(model||'festival')+"(s): ",err)};
 
   var show = function(festival) {
-    function cmpArtists(A, B) {var a=A.name,b=B.name;return a>b?1:(a<b?-1:0);}
+    function cmpArtists(A,B){var a=A.name,b=B.name;return a>b?1:(a<b?-1:0);}
+    $scope.festival = festival;
     $scope.timelineItems = [];
     $scope.lineupItems = [];
+    $scope.searching = false;
 
-    // Configure the Filter/Search Bar
-      $scope.searching = false;
+    // Search bar config
       var filterBarInstance;
       $scope.showFilterBar = function() {
         filterBarInstance = $ionicFilterBar.show({
@@ -18,7 +19,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
         });
       };
 
-    // Set up the timeline
+    // Timeline config
       var timelineContainer = document.getElementById('festival-timeline');
       var ZOOM_MIN = 4 * 3600000;
       var MAX_ZOOM_SHOW_MINOR = 89161006;
@@ -68,8 +69,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
         cb(item);
       }
 
-    // Other view data
-      $scope.festival = festival;
+    // View data
       PerformanceService.getPerformancesForFestival(festival)
       .then(function(performances) {
         var tmp_lineup =  performances.map(function(p) {
@@ -91,7 +91,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
         $scope.lineupItems = tmp_lineup;
       }, fail.bind(null, 'performance'));
 
-    // User actions
+    // View actions
       $scope.lineupChange = function(item, dest) {
         function find(a, b, ix) { return (b.id === item.id) ? ix : a; }
         var tmp_lineup, tmp_timeline, tmp_item, ix;
