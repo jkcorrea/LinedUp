@@ -21,8 +21,13 @@
           </div>
         </ion-alpha-scroll>
 
-        <div ng-if="lineupItems !== undefined && !lineupItems.length" class="no-results">
-          <h3>No artists found!</h3>
+        <div ng-if="lineupItems && !lineupItems.length" ng-switch on="searching">
+          <div ng-switch-when="true" class="no-results">
+            <h3>No artists found!</h3>
+          </div>
+          <div ng-switch-when="false">
+            <ion-spinner></ion-spinner>
+          </div>
         </div>
 
       </div>

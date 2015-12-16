@@ -45,26 +45,29 @@
     .vis-line, .vis-dot { display: none; }
     .vis-item-content {
       & > * { display: inline-block; }
-      font-size: 0.7rem;
-      padding: 0 2px;
+      font-size: 0.8rem;
+      padding: 2px 4px;
 
-      .artist-avatar { width: 16px;  height: 16px; }
+      .artist-avatar { width: 20px;  height: 20px; }
     }
   }
 
   #lineup-list-container {
+    background: $light;
     position: relative;
     flex: 5;
 
     #lineup-list { position: absolute; height: 100%; width: 100%; }
-    .list, .scroll-view { height: 100% !important; }
+    .list, .scroll-view { height: 100% !important; padding-right: 10px;}
 
-    ul.ion_alpha_sidebar { position: absolute; li { line-height: 14px; } }
+    ul.ion_alpha_sidebar { position: absolute; li { line-height: 0.95rem; } }
 
     .lineup-list-item {
       & > * { display: inline-block; }
       .artist-avatar { height: 64px; width: 64px; }
     }
+
+    .spinner { position: absolute; top: 5%; left: 45%; }
   }
 
   .artist-avatar { vertical-align: middle; margin-right: 7px; }

@@ -2,18 +2,19 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
   var fail = function(model, err) { throw "Could not retrieve "+(model||'festival')+"(s): ", err; };
 
   var show = function(festival) {
-    function cmpArtists(A, B) {var a=A.content, b=B.content;return a>b?1:(a<b?-1:0);}
-    $scope.timelineItems = []
+    function cmpArtists(A, B) {var a=A.content,b=B.content;return a>b?1:(a<b?-1:0);}
+    $scope.timelineItems = [];
     $scope.lineupItems = [];
 
     // Configure the Filter/Search Bar
+      $scope.searching = false;
       var filterBarInstance;
       $scope.showFilterBar = function() {
         filterBarInstance = $ionicFilterBar.show({
           items: $scope.lineupItems,
-          update: function(filteredItems, filterText) {
-            $scope.lineupItems = filteredItems;
-          }
+          update: function(items){$scope.lineupItems=items;},
+          done: function() {$scope.searching=true;},
+          cancel: function() {$scope.searching=false;}
         });
       };
 
@@ -23,7 +24,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
       var MAX_ZOOM_SHOW_MINOR = 89161006;
       var timelineGroups = festival
         .get('stages')
-        .map(function(stage, index){return {id: index, content: stage}});
+        .map(function(stage, index){return {id: index+1, content: stage}});
 
       var start = new Date(festival.get('start'))
         , end = new Date(festival.get('end'));
