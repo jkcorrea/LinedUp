@@ -2,7 +2,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
   var fail = function(model, err) { throw "Could not retrieve "+(model||'festival')+"(s): ", err; };
 
   var show = function(festival) {
-    function cmpArtists(A, B) {var a=A.content,b=B.content;return a>b?1:(a<b?-1:0);}
+    function cmpArtists(A, B) {var a=A.name,b=B.name;return a>b?1:(a<b?-1:0);}
     $scope.timelineItems = [];
     $scope.lineupItems = [];
 
@@ -23,8 +23,9 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
       var ZOOM_MIN = 4 * 3600000;
       var MAX_ZOOM_SHOW_MINOR = 89161006;
       var timelineGroups = festival
-        .get('stages')
-        .map(function(stage, index){return {id: index+1, content: stage}});
+        .get('stages').map(function(stage,ix){
+          return{id:ix+1,content:stage}
+        });
 
       var start = new Date(festival.get('start'))
         , end = new Date(festival.get('end'));
