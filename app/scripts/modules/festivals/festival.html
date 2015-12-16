@@ -12,14 +12,16 @@
       <div id="festival-timeline"></div>
 
 
-      <div id="artists-list-container">
+      <div id="lineup-list-container">
 
-        <ion-alpha-scroll id="artists-list" ng-model="artists" key="name">
-          <div class="artist-avatar" bg-img="{{item.avatar}}"></div>
-          <div>{{item.name}}</div>
+        <ion-alpha-scroll id="lineup-list" ng-model="lineup" key="name">
+          <div class="lineup-list-item" ng-click="addToTimeline(item)">
+            <div class="artist-avatar" bg-img="{{item.avatar}}"></div>
+            <div>{{item.name}}</div>
+          </div>
         </ion-alpha-scroll>
 
-        <div ng-if="artists !== undefined && !artists.length" class="no-results">
+        <div ng-if="lineup !== undefined && !lineup.length" class="no-results">
           <h3>No artists found!</h3>
         </div>
 

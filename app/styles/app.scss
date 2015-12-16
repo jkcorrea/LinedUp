@@ -31,16 +31,16 @@
     .vis-timeline { position: absolute; height: 100% !important; width: 100%; border: none; }
   }
 
-  #artists-list-container {
+  #lineup-list-container {
     position: relative;
     flex: 5;
 
-    #artists-list { position: absolute; height: 100%; width: 100%; }
+    #lineup-list { position: absolute; height: 100%; width: 100%; }
     .list, .scroll-view { height: 100% !important; }
 
     ul.ion_alpha_sidebar { position: absolute; li { line-height: 14px; } }
 
-    .item {
+    .artist-list-item {
       & > * { display: inline-block; }
 
       .artist-avatar {

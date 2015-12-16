@@ -1,8 +1,10 @@
 function FestivalsController($scope, $state, $stateParams, FestivalService, PerformanceService, $ionicFilterBar) {
-  console.log('Hello from your Controller: FestivalsCtrl in module main:. This is your controller:', this);
   var fail = function(model, err) { throw "Could not retrieve "+(model||'festival')+"(s): ", err; };
 
   var show = function(festival) {
+    var inTimeline = {}
+      , inLineup = {};
+
     // Configure the Filter/Search Bar
       var filterBarInstance;
       $scope.showFilterBar = function() {
@@ -16,34 +18,26 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
       var timelineContainer = document.getElementById('festival-timeline');
       var ZOOM_MIN = 4 * 3600000;
       var MAX_ZOOM_SHOW_MINOR = 89161006;
-      // var dataSet = new VisDataSet();
-      // dataSet.add({
-      //   "1": {
-      //     "id": 1,
-      //     "content": "<i class=\"fi-flag\"></i> item 1",
-      //     "start": (new Date()).toISOString(),
-      //     "className": "magenta",
-      //     "type": "box"
-      //   }
-      // });
+      var timelineData = new vis.DataSet();
+      var timelineGroups = festival
+        .get('stages')
+        .map(function(stage, index){return {id: index, content: stage}});
 
-      timelineData = {};
       timelineOpts = {
         min: festival.get("start") || "",
         max: festival.get("end") || "",
         timeAxis: { scale: 'hour', step: 3 },
         format: {
           minorLabels: { hour: 'ha' },
-          majorLabels: { day: 'ddd' }
+          majorLabels: { day: 'ddd', month: 'ddd', year: 'ddd' }
         },
         showMinorLabels: false,
         zoomMin: ZOOM_MIN, // 4 hours converted to ms
       };
 
-      var timeline = new vis.Timeline(timelineContainer, timelineData, timelineOpts);
+      var timeline = new vis.Timeline(timelineContainer, timelineData, timelineGroups, timelineOpts);
       timeline.on('rangechange', function(e) {
         var zoomLevel = e.end - e.start;
-        console.log(zoomLevel);
         if (zoomLevel <= MAX_ZOOM_SHOW_MINOR) {
           timeline.setOptions({ showMinorLabels: true });
         } else if (zoomLevel > MAX_ZOOM_SHOW_MINOR) {
@@ -56,11 +50,32 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
       PerformanceService.getPerformancesForFestival(festival)
         .then(function(performances) {
           //performances;
-          $scope.artists = performances.map(function(p) {
-            var a = p.get('artist');
-            return { name: a.get('name'), avatar: a.get('avatar') };
+          $scope.lineup = performances.map(function(p) {
+            inLineup[p.id] = {
+              name: p.get('artist').get('name'),
+              avatar: p.get('artist').get('avatar'),
+              performance: p
+            };
+            return inLineup[p.id];
           });
         }, fail.bind(null, 'performance'));
+
+    // User actions
+      $scope.addToTimeline = function(item) {
+        var p = item.performance;
+        inTimeline[p.id] = item;
+        delete inLineup[p.id];
+
+        timelineData.add({
+          id: p.id,
+          content: '<i class=\"fi-flag\"></i> ' + p.get('artist').get('name'),
+          start: p.get('start'),
+          end: p.get('end'),
+          className: 'magenta',
+          type: 'box',
+          group: p.get('stage')
+        });
+      };
   };
 
   var index = function(festivals) { $scope.festivals = festivals; };
