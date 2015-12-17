@@ -62,6 +62,7 @@ var paths = {
   gulp.task('sass', function() {
     gulp.src(paths.styles.main)
       .pipe($.sass())
+      .pipe($.autoprefixer({browsers: ['last 2 versions']}))
       .on('error', $.sass.logError)
       // .pipe($.minifyCss({ keepSpecialComments: 0 }))
       // .pipe($.rename({ extname: '.min.css' }))
