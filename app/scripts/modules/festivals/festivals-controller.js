@@ -38,13 +38,12 @@ function FestivalsController(
       var start = new Date(festival.get('start'))
         , end = new Date(festival.get('end'));
       timelineOpts = {
-        min: start.setHours(start.getHours() - 6),
-        max: end.setHours(start.getHours() + 6),
+        min: start.setHours(start.getHours() - 12),
+        max: end.setHours(start.getHours() + 12),
         timeAxis: { scale: 'hour', step: 3 },
         format: { minorLabels: { hour: 'ha' } },
         showMinorLabels: false,
         zoomMin: ZOOM_MIN, // 4 hours converted to ms
-        editable: { remove: true },
         template: formatContent,
         onRemove: removeFromTimeline,
       };
@@ -62,6 +61,12 @@ function FestivalsController(
         }
       });
 
+      timeline.on('doubleClick', function(e) {
+        if (e.item) $scope.$apply(function() {
+          lineupChange(timeline.itemSet.getItems().get(e.item), 'lineup');
+        });
+      });
+
       function formatContent(item) {
         return (
             '<div class="artist-avatar" style="background-image: url(\''+item.avatar+'\'); background-size: cover;">'
@@ -72,15 +77,24 @@ function FestivalsController(
 
       // Deleting from timeline -> send back to lineup
       function removeFromTimeline(item, cb) {
-        $scope.$apply(function(){$scope.lineupChange(item, 'lineup');});
+        $scope.$apply(function(){ lineupChange(item, 'lineup'); });
         cb(item);
       }
 
     // View data
+      function cmpPerformances(userPerf) { return userPerf.id === this.id; }
       PerformanceService.getPerformancesForFestival(festival)
       .then(function(performances) {
-        var tmp_lineup =  performances.map(function(p) {
-          return {
+      UserService.getLineupForFestival(festival)
+      .then(function(userLineup) {
+        var tmp_lineup = []
+          , tmp_timeline = [];
+
+        // Go through each performance, adding to timeline or
+        // festival lineup depending on what the current user has in Parse
+        for (var ix = 0; ix < performances.length; ix++) {
+          var p = performances[ix];
+          var perfItem = {
             // Lineup list data
             avatar: p.get('artist').get('avatar'),
             name: p.get('artist').get('name'),
@@ -94,12 +108,21 @@ function FestivalsController(
             type: 'box',
             group: p.get('stage')
           };
-        }).sort(cmpArtists);
-        $scope.lineupItems = tmp_lineup;
+
+          // Push into festival or user's lineup
+          if (userLineup.some(cmpPerformances, p)) tmp_timeline.push(perfItem);
+          else tmp_lineup.push(perfItem);
+        }
+
+        $scope.lineupItems = tmp_lineup.sort(cmpArtists);
+        $scope.timelineItems = tmp_timeline;
+        timeline.setItems(tmp_timeline);
+      }, fail.bind(null, 'user_performance'));
       }, fail.bind(null, 'performance'));
 
     // View actions
-      $scope.lineupChange = function(item, dest) {
+      $scope.lineupChange = lineupChange;
+      function lineupChange(item, dest) {
         function find(a, b, ix) { return (b.id === item.id) ? ix : a; }
         var tmp_lineup, tmp_timeline, tmp_item, ix;
         if (!dest || dest === 'timeline') {

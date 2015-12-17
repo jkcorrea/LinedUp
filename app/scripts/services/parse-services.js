@@ -1,22 +1,16 @@
 var Artist = Parse.Object.extend('Artist')
   , Festival = Parse.Object.extend('Festival')
   , Performance = Parse.Object.extend('Performance')
-  // , user = Parse.User.current();
 
 function FestivalService($q) {
-  this.saveFestival = function(festival) {
-    // return $http.post('/festivals', festival);s
-  };
-
-  this.searchFestivals = function(query) {
-    // return $http.get('/festivals/search/' + query);
-  };
+  this.saveFestival = function(festival) {};
+  this.searchFestivals = function(query) {};
 
   this.getFestivals = function() {
-    var festivalQuery = new Parse.Query(Festival);
+    var query = new Parse.Query(Festival);
     var deferred = $q.defer();
 
-    festivalQuery.find({
+    query.find({
       success: function(festivals) { deferred.resolve(festivals); },
       error: function(err) { deferred.reject(err); },
     });
@@ -25,10 +19,10 @@ function FestivalService($q) {
   };
 
   this.getFestival = function(id) {
-    var festivalQuery = new Parse.Query(Festival);
+    var query = new Parse.Query(Festival);
     var deferred = $q.defer();
 
-    festivalQuery.get(id, {
+    query.get(id, {
       success: function(festival) { deferred.resolve(festival); },
       error: function(err) { deferred.reject(err); },
     });
@@ -39,12 +33,12 @@ function FestivalService($q) {
 
 function PerformanceService($q) {
   this.getPerformancesForFestival = function(festival) {
-    var performanceQuery = new Parse.Query(Performance);
-    performanceQuery.equalTo('festival', festival);
-    performanceQuery.include('artist');
+    var query = new Parse.Query(Performance);
+    query.equalTo('festival', festival);
+    query.include('artist');
     var deferred = $q.defer();
 
-    performanceQuery.find({
+    query.find({
       success: function(performances) { deferred.resolve(performances); },
       error: function(err) { deferred.reject(err); }
     });
@@ -53,21 +47,40 @@ function PerformanceService($q) {
   };
 }
 
-function UserService() {
+function UserService($q) {
   this.addPerformance = function(performance) {
-    var rel = user.relation("performances");
+    var user = Parse.User.current();
+    if (!user) return;
+    var rel = user.relation('performances');
     rel.add(performance);
     user.save();
   };
 
   this.removePerformance = function(performance) {
-    var rel = user.relation("performances");
+    var user = Parse.User.current();
+    if (!user) return;
+    var rel = user.relation('performances');
     rel.remove(performance);
     user.save();
   };
+
+  this.getLineupForFestival = function(festival) {
+    var user = Parse.User.current();
+    if (!user) return;
+
+    var deferred = $q.defer();
+
+    // First get all of the user's performances
+    user.relation('performances').query()
+    .equalTo('festival', festival).find({
+      success: function(performances) { deferred.resolve(performances) },
+      error: function(err) { deferred.reject(err); }
+    });
+    return deferred.promise;
+  }
 }
 
 module.exports = angular.module('LinedUp.services.Parse', [])
 .service('FestivalService', ['$q', FestivalService])
 .service('PerformanceService', ['$q', PerformanceService])
-.service('UserService', UserService);
+.service('UserService', ['$q', UserService]);
