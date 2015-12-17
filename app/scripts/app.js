@@ -2,6 +2,7 @@ require('../bower_components/ionic/js/ionic.bundle');
 require('../bower_components/angular-visjs/angular-vis');
 require('../bower_components/ion-alpha-scroll/src/ion-alpha-scroll');
 require('../bower_components/ionic-filter-bar/dist/ionic.filter.bar');
+require('../bower_components/moment/min/moment.min');
 // require('../bower_components/ngCordova/dist/ng-cordova');
 
 window.Parse = require('../bower_components/parse/parse');
@@ -24,7 +25,7 @@ module.exports = angular.module('LinedUp', [
   'LinedUp.services.Parse',
 ])
 .constant('Config', require('./constants/config-const'))
-.config(require('./router'))
+.config(require('./app-router'))
 .run(require('./app-main'));
 
 require('./directives');
