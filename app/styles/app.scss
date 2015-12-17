@@ -1,79 +1,9 @@
 // Include all of Ionic. Import overrides before importing ionic.
-@import "variable_overrides",
-        "../bower_components/ionic/scss/ionic",
-        "../bower_components/vis/dist/vis",
-        "../bower_components/ion-alpha-scroll/src/ion-alpha-scroll",
-        "../bower_components/ionic-filter-bar/scss/ionic.filter.bar";
+@import "variable_overrides"
+      , "../bower_components/ionic/scss/ionic"
+      , "../bower_components/vis/dist/vis"
+      , "../bower_components/ion-alpha-scroll/src/ion-alpha-scroll"
+      , "../bower_components/ionic-filter-bar/scss/ionic.filter.bar"
 
-// Fix for visjs delete.png path
-.vis-item .vis-delete {
-  // background: url('img/timeline/delete.png') no-repeat center;
-  background: url('/img/timeline/delete.png') no-repeat center;
-  background-size: 50%;
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  top: -10px;
-  right: -12px;
-  cursor: pointer;
-}
-
-#my-festivals-list {
-  .item {
-    border: none;
-    max-height: 100px;
-
-    .item-content { padding: 16px; }
-    img {
-      display: block;
-      margin: 0 auto;
-      max-width: 100%;
-    }
-  }
-}
-
-.festival-content {
-  display: flex;
-  flex-direction: column;
-
-
-  #festival-timeline {
-    position: relative;
-    flex: 3;
-
-    .vis-timeline { position: absolute; height: 100% !important; width: 100%; border: none; }
-    .vis-line, .vis-dot { display: none; }
-    .vis-item-content {
-      & > * { display: inline-block; }
-      font-size: 0.8rem;
-      padding: 2px 4px;
-
-      .artist-avatar { width: 20px;  height: 20px; }
-    }
-  }
-
-  #lineup-list-container {
-    background: $light;
-    position: relative;
-    flex: 5;
-
-    #lineup-list { position: absolute; height: 100%; width: 100%; }
-    .list, .scroll-view { height: 100% !important; padding-right: 10px;}
-
-    ul.ion_alpha_sidebar { position: absolute; li { line-height: 0.95rem; } }
-
-    .lineup-list-item {
-      & > * { display: inline-block; }
-      .artist-avatar { height: 64px; width: 64px; }
-    }
-
-    .spinner { position: absolute; top: 5%; left: 45%; }
-  }
-
-  .artist-avatar { vertical-align: middle; margin-right: 7px; }
-}
-
-
-.vis-timeline {
-  border: none;
-}
+      , "./festivals"
+      , "./login";

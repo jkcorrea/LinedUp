@@ -129,7 +129,7 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
   }
 }
 
-module.exports = angular.module('festivals', [])
+module.exports = angular.module('LinedUp.controllers.Festivals', [])
 .controller('FestivalsController', [
   '$scope',
   '$state',

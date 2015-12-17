@@ -52,6 +52,6 @@ function PerformanceService($q) {
   };
 }
 
-module.exports = angular.module('parseServices', [])
+module.exports = angular.module('LinedUp.services.Parse', [])
 .service('FestivalService', ['$q', FestivalService])
 .service('PerformanceService', ['$q', PerformanceService]);
