@@ -16,11 +16,14 @@ function AppMain ($ionicPlatform, Config, $window) {
     if (window.StatusBar) { StatusBar.styleDefault(); }
 
     // Init Parse FB sdk if on a browser
-    if (!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())) {
+    // TODO fix this for native if going to native
+    // if (ionic.Platform.isWebView()) {
       window.fbAsyncInit = function() {
         Parse.FacebookUtils.init({
           appId: Config.FB_APP_ID,
-          xfbml: true
+          cookie: true,
+          xfbml: true,
+          version: 'v2.5'
         });
       };
 
@@ -31,7 +34,7 @@ function AppMain ($ionicPlatform, Config, $window) {
          js.src = "//connect.facebook.net/en_US/sdk.js";
          fjs.parentNode.insertBefore(js, fjs);
        }(document, 'script', 'facebook-jssdk'));
-    }
+    // }
 
   });
 }

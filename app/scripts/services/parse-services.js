@@ -1,6 +1,7 @@
 var Artist = Parse.Object.extend('Artist')
   , Festival = Parse.Object.extend('Festival')
-  , Performance = Parse.Object.extend('Performance');
+  , Performance = Parse.Object.extend('Performance')
+  // , user = Parse.User.current();
 
 function FestivalService($q) {
   this.saveFestival = function(festival) {
@@ -52,6 +53,21 @@ function PerformanceService($q) {
   };
 }
 
+function UserService() {
+  this.addPerformance = function(performance) {
+    var rel = user.relation("performances");
+    rel.add(performance);
+    user.save();
+  };
+
+  this.removePerformance = function(performance) {
+    var rel = user.relation("performances");
+    rel.remove(performance);
+    user.save();
+  };
+}
+
 module.exports = angular.module('LinedUp.services.Parse', [])
 .service('FestivalService', ['$q', FestivalService])
-.service('PerformanceService', ['$q', PerformanceService]);
+.service('PerformanceService', ['$q', PerformanceService])
+.service('UserService', UserService);

@@ -8,11 +8,20 @@ function forceLogin($state) { if (!Parse.User.current()) $state.go('login'); }
 function AppRouter($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProvider) {
   $urlRouterProvider.otherwise('/login');
   $stateProvider
+
+    // Sessions
     .state('login', {
       url: '/login',
-      templateUrl: getTemplateUrl('login'),
-      controller: 'LoginController as login'
+      templateUrl: getTemplateUrl('login', 'sessions'),
+      controller: 'SessionsController'
     })
+    .state('logout', {
+      url: '/logout',
+      onEnter: function() { Parse.User.logOut(); },
+      controller: function($state) { $state.go('login'); }
+    })
+
+    // Main views
     .state('main', {
       url: '/main',
       abstract: true,
@@ -24,7 +33,7 @@ function AppRouter($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProv
         views: {
           'pageContent': {
             templateUrl: getTemplateUrl('festivals'),
-            controller: 'FestivalsController as festivals'
+            controller: 'FestivalsController'
           }
         }
       })
@@ -33,7 +42,7 @@ function AppRouter($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProv
         views: {
           'pageContent': {
             templateUrl: getTemplateUrl('festival', 'festivals'),
-            controller: 'FestivalsController as festivals'
+            controller: 'FestivalsController'
           }
         }
       });

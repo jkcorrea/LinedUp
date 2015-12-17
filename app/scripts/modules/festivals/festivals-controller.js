@@ -1,4 +1,12 @@
-function FestivalsController($scope, $state, $stateParams, FestivalService, PerformanceService, $ionicFilterBar) {
+function FestivalsController(
+          $scope,
+          $state,
+          $stateParams,
+          FestivalService,
+          PerformanceService,
+          UserService,
+          $ionicFilterBar)
+{
   var fail = function(model,err){console.log("Could not retrieve "+(model||'festival')+"(s): ",err)};
 
   var show = function(festival) {
@@ -100,12 +108,18 @@ function FestivalsController($scope, $state, $stateParams, FestivalService, Perf
           tmp_lineup = $scope.lineupItems.slice(0);
           tmp_lineup.splice(ix, 1);
           tmp_timeline = $scope.timelineItems.concat(tmp_item);
+
+          // Add this performance to the user's lineup
+          UserService.addPerformance(item.performance);
         } else {
           ix = $scope.timelineItems.reduce(find, 0);
           tmp_item = $scope.timelineItems[ix];
           tmp_timeline = $scope.timelineItems.slice(0);
           tmp_timeline.splice(ix, 1);
           tmp_lineup = $scope.lineupItems.concat(tmp_item).sort(cmpArtists);
+
+          // Remove this performance from user's lineup
+          UserService.removePerformance(item.performance);
         }
 
         $scope.lineupItems = tmp_lineup;
@@ -136,6 +150,7 @@ module.exports = angular.module('LinedUp.controllers.Festivals', [])
   '$stateParams',
   'FestivalService',
   'PerformanceService',
+  'UserService',
   '$ionicFilterBar',
   FestivalsController
 ]);

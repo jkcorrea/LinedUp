@@ -1,13 +1,14 @@
 var fbUtil = Parse.FacebookUtils;
 
-function LoginController($scope, $state, Config) { //$cordovaFacebook) {
+function SessionsController($scope, $state, Config) { //$cordovaFacebook) {
   $scope.loginFacebook = function() {
-    fbUtil
-    .logIn(Config.FB_PERMISSIONS)
-    .then(function(user) {
-      $state.go('main')
-    }, function(user, err) {
-
+    fbUtil.logIn(Config.FB_PERMISSIONS.join(","), {
+      success: function(user) {
+        $state.go('main.festivals')
+      },
+      error: function(user, err) {
+        console.error(user, err);
+      }
     });
 
     // // Native Android / iOS login
@@ -41,11 +42,11 @@ function LoginController($scope, $state, Config) { //$cordovaFacebook) {
   }
 }
 
-module.exports = angular.module('LinedUp.controllers.Login', [])
-.controller('LoginController', [
+module.exports = angular.module('LinedUp.controllers.Sessions', [])
+.controller('SessionsController', [
   '$scope',
   '$state',
   'Config',
-  LoginController
+  SessionsController
 ]);
 

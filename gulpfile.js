@@ -51,8 +51,6 @@ var paths = {
       .pipe(source(paths.scripts.main))
       .pipe(buffer())
       .pipe($.sourcemaps.init({loadMaps: true}))
-        // .pipe($.uglify())
-        .on('error', $.util.log)
       .pipe($.sourcemaps.write('./'))
       .pipe($.rename({ dirname: './' }))
       .pipe(gulp.dest(paths.scripts.build));
@@ -61,9 +59,9 @@ var paths = {
 // SASS - Compile it down to css in www/css/
   gulp.task('sass', function() {
     gulp.src(paths.styles.main)
+      .on('error', $.sass.logError)
       .pipe($.sass())
       .pipe($.autoprefixer({browsers: ['last 2 versions']}))
-      .on('error', $.sass.logError)
       // .pipe($.minifyCss({ keepSpecialComments: 0 }))
       // .pipe($.rename({ extname: '.min.css' }))
       .pipe(gulp.dest(paths.styles.build))

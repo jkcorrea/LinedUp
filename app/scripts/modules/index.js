@@ -1,2 +1,2 @@
 require('./festivals/festivals-controller');
-require('./login/login-controller');
+require('./sessions/sessions-controller');
