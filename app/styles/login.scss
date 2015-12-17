@@ -2,10 +2,22 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: linear-gradient(to left top, to left bottom, color-stop(0%,#efad62), color-stop(100%,#f7d47c));
-  background: linear-gradient(to top, #efad62 0%,#f7d47c 100%);
+  background:
+    linear-gradient(to top, #FFFFFF 0%, #FDF7E7 40%, #FFFFFB 120%) center top / 100% 50% no-repeat,
+    url('../img/festival-crowd.jpg') center bottom / auto 70% no-repeat;
 
-  .button-row img { max-width: 80%; }
-  .header { flex: 4; padding-top: 20px; }
-  .logo { max-height: 80%; max-width: 80%; width: auto; }
+  .button-row img { cursor: pointer; max-width: 80%; }
+  .header { flex: 4; margin-top: 45px; display: flex; align-items: center; }
+  .logo {
+    font-family: 'Homemade Apple', cursive, sans-serif;
+    font-weight: bold;
+    font-size: 48px;
+    margin: 0 auto;
+    vertical-align: middle;
+    max-height: 80%;
+    max-width: 80%;
+    width: auto;
+  }
+
+  span { color: #FDF7E7; a { color: $positive; } }
 }

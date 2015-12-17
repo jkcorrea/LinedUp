@@ -109,6 +109,7 @@ gulp.task('clean', function(done) {
 });
 
 gulp.task('build', ['browserify', 'sass', 'copy']);
+
 gulp.task('default', ['build'], function() {
   gulp.watch(paths.fonts.src, ['fonts']);
   gulp.watch(paths.img.src, ['img']);

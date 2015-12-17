@@ -1,11 +1,12 @@
-<ion-view>
+<ion-view hide-nav-bar="true">
   <ion-content scroll="false">
     <section class="login-container">
       <div class="col header text-center">
-        <img src="/img/logo.png" class="logo">
+        <div class="logo">LinedUp</div>
+        <div class="tagline"></div>
       </div>
 
-      <div class="col button-row text-center">
+      <div ng-click="loginFacebook()" class="col button-row text-center">
         <img src="/img/facebook-button.png">
       </div>
 
@@ -14,7 +15,7 @@
       </div>
 
       <div class="col text-center">
-        Already have an account? <strong><a href="#">Sign in now!</a></strong>
+        <span>Already have an account? <strong><a href="#">Sign in now!</a></strong></span>
       </div>
     </section>
   </ion-content>

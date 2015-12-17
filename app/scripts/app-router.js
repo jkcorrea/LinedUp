@@ -3,7 +3,7 @@ function getTemplateUrl(template, module) {
   return modulesDir + (module || template) + '/' + template + '.html';
 }
 
-function checkLogin($state) { if (!Parse.User.current()) $state.go('login'); }
+function forceLogin($state) { if (!Parse.User.current()) $state.go('login'); }
 
 function AppRouter($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProvider) {
   $urlRouterProvider.otherwise('/login');
