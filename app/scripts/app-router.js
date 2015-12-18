@@ -3,17 +3,20 @@ function getTemplateUrl(template, module) {
   return modulesDir + (module || template) + '/' + template + '.html';
 }
 
-function forceLogin($state) { if (!Parse.User.current()) $state.go('login'); }
+function isLoggedIn() { return Parse.User.current(); }
+function forceLogin($state) { if (!isLoggedIn()) $state.go('login'); }
+function bypassLogin($state) { if (isLoggedIn()) $state.go('main.festivals'); }
 
-function AppRouter($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProvider) {
-  $urlRouterProvider.otherwise('/login');
+function AppRouter($stateProvider, $urlRouterProvider) {
+  $urlRouterProvider.otherwise('/main/festivals');
+
   $stateProvider
-
     // Sessions
     .state('login', {
       url: '/login',
       templateUrl: getTemplateUrl('login', 'sessions'),
-      controller: 'SessionsController'
+      controller: 'SessionsController',
+      onEnter: ['$state', bypassLogin]
     })
     .state('logout', {
       url: '/logout',
@@ -48,4 +51,4 @@ function AppRouter($stateProvider, $urlRouterProvider, $ionicFilterBarConfigProv
       });
 }
 
-module.exports = ['$stateProvider', '$urlRouterProvider', '$ionicFilterBarConfigProvider', AppRouter];
+module.exports = ['$stateProvider', '$urlRouterProvider', AppRouter];
