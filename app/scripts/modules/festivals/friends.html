@@ -13,7 +13,7 @@
 
       <ion-alpha-scroll id="lineup-list" ng-model="listItems" key="name">
         <div class="lineup-list-item" ng-click="toggleFriend(item)">
-          <div class="artist-avatar" ng-class="activeTab" bg-img="{{item.avatar}}"></div>
+          <div class="artist-avatar" ng-class="[activeTab, isChecked(item)]" bg-img="{{item.avatar}}"></div>
           <div>{{item.name}}</div>
         </div>
       </ion-alpha-scroll>

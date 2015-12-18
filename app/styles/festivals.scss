@@ -58,7 +58,8 @@
     .lineup-list-item {
       & > * { display: inline-block; }
       .artist-avatar { height: 64px; width: 64px; }
-      .artist-avatar.friends { border-radius: 50%; }
+      .artist-avatar.friends { transition: all .2s linear; border-radius: 50%; }
+      .artist-avatar.checked { transform: rotateY(-180deg) scaleX(-1); background: url('/img/check_circle.png') 100% 100% / 100% 100% no-repeat !important; }
     }
 
     .spinner { position: absolute; top: 5%; left: 45%; }

@@ -230,7 +230,11 @@ function FestivalsController(
             timeline.setItems(tmp_timeline);
           }, fail.bind(null, 'friend_performance'));
         }
-      }
+      };
+
+      $scope.isChecked = function(item) {
+        return timeline.groupsData.get(item.user.id) ? 'checked' : '';
+      };
 
 
 
