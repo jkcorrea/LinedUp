@@ -7,6 +7,8 @@ function FestivalsController(
           UserService,
           $ionicFilterBar)
 {
+  var user = Parse.User.current();
+
   var fail = function(model,err){console.log("Could not retrieve "+(model||'festival')+"(s): ",err)};
 
   var show = function(festival) {
@@ -120,12 +122,13 @@ function FestivalsController(
         }, fail.bind(null, 'user_performance'));
         }, fail.bind(null, 'performance'));
 
-        timelineGroups = festival.get('stages')
-          .map(function(stage, ix) { return { id: ix+1, content: stage } });
+        timeline.setGroups(festival.get('stages').map(function(stage, ix) {
+          return { id: ix+1, content: stage };
+        }));
       }
       lineupTabData(); // Initial view. Invoke immediately
 
-      function friendTabData() {
+      function friendsTabData() {
         // Get user's lineup, set to first group
         UserService.getLineupForFestival(festival)
         .then(function(userLineup) {

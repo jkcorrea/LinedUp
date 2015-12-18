@@ -4,6 +4,18 @@ function SessionsController($scope, $state, Config) { //$cordovaFacebook) {
   $scope.loginFacebook = function() {
     fbUtil.logIn(Config.FB_PERMISSIONS.join(","), {
       success: function(user) {
+        // If a new user, set some data from FB api
+        if (!user.existed()) {
+          FB.api('/me?fields=first_name,last_name,picture.type(normal)', function(me) {
+            if (me.error) { console.error(me.error); return; }
+            user.set("firstName", me.first_name);
+            user.set("lastName", me.last_name);
+            user.set("picture", me.picture.data.url);
+            user.save(null);
+          });
+        }
+
+        // Either way, continue to home screen
         $state.go('main.festivals')
       },
       error: function(user, err) {
