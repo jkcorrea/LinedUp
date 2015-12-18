@@ -33,18 +33,21 @@ function FestivalsController(
 
     // Timeline config
       var timelineContainer = document.getElementById('festival-timeline');
-      var ZOOM_MIN = 4 * 3600000;
+      var ZOOM_MIN = 4 * 3600000; // 4 hrs in ms
+      var ZOOM_MAX = 1 * 86400000; // 1 day in ms
       var MAX_ZOOM_SHOW_MINOR = 89161006;
 
       var start = new Date(festival.get('start'))
         , end = new Date(festival.get('end'));
       timelineOpts = {
-        min: start.setHours(start.getHours() - 12),
-        max: end.setHours(start.getHours() + 16),
+        start: start,
+        min: start.setHours(start.getHours() - 15),
+        max: end.setHours(start.getHours() + 20),
         timeAxis: { scale: 'hour', step: 3 },
         format: { minorLabels: { hour: 'ha' } },
         showMinorLabels: false,
-        zoomMin: ZOOM_MIN, // 4 hours converted to ms
+        zoomMin: ZOOM_MIN,
+        zoomMax: ZOOM_MAX,
         template: formatContent,
         onRemove: removeFromTimeline,
       };

@@ -99,7 +99,7 @@ function UserService($q) {
     });
 
     return deferred.promise;
-  }
+  };
 }
 
 module.exports = angular.module('LinedUp.services.Parse', [])
