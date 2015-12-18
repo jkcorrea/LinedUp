@@ -35,7 +35,7 @@
     flex: 3;
 
     .vis-timeline { position: absolute; height: 100% !important; width: 100%; border: none; }
-    .vis-line, .vis-dot { display: none; }
+    // .vis-line, .vis-dot { display: none; }
     .vis-item-content {
       & > * { display: inline-block; }
       font-size: 0.8rem;
@@ -53,7 +53,7 @@
     #lineup-list { position: absolute; height: 100%; width: 100%; }
     .list, .scroll-view { height: 100% !important; padding-right: 10px;}
 
-    ul.ion_alpha_sidebar { position: absolute; li { line-height: 0.95rem; } }
+    ul.ion_alpha_sidebar { top: 3%; position: absolute; li { line-height: 0.8rem; } }
 
     .lineup-list-item {
       & > * { display: inline-block; }

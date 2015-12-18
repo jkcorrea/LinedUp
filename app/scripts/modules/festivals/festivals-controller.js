@@ -34,7 +34,7 @@ function FestivalsController(
     // Timeline config
       var timelineContainer = document.getElementById($scope.activeTab + '-timeline');
       var ZOOM_MIN = 4 * 3600000; // 4 hrs in ms
-      var ZOOM_MAX = 1 * 86400000; // 1 day in ms
+      var ZOOM_MAX = 2 * 86400000; // 1 day in ms
       var MAX_ZOOM_SHOW_MINOR = 89161006;
 
       var start = new Date(festival.get('start'))
@@ -67,7 +67,11 @@ function FestivalsController(
 
       timeline.on('doubleClick', function(e) {
         if (e.item) $scope.$apply(function() {
-          lineupChange(timeline.itemSet.getItems().get(e.item), 'lineup');
+          lineupChange(timeline.itemsData.get(e.item), 'lineup');
+        });
+
+        if (e.group && e.group !== user.id) $scope.$apply(function() {
+          toggleFriend(timeline.groupsData.get(e.group));
         });
       });
 
@@ -93,7 +97,7 @@ function FestivalsController(
         if (arguments.length < 2) p = opts;
 
         return {
-          id: p.id,
+          id: p.id.concat(opts.id || ''),
           avatar: p.get('artist').get('avatar'),
           name: p.get('artist').get('name'),
           performance: p,
@@ -137,18 +141,18 @@ function FestivalsController(
       }
 
       function friendsTabData() {
+
         // Get user's lineup, set to first group
         UserService.getLineupForFestival(user, festival)
         .then(function(userLineup) {
           var tmp_timeline = userLineup
-            .map(generatePerfItem.bind(null, { group: 1 }));
+            .map(generatePerfItem.bind(null, { group: user.id }));
           $scope.timelineItems = tmp_timeline;
           timeline.setItems(tmp_timeline);
-
         }, fail.bind(null, 'user_performance'));
 
         timeline.setGroups([{
-          id: 1,
+          id: user.id,
           content: user.get('firstName') || 'Me'
         }]);
 
@@ -197,8 +201,35 @@ function FestivalsController(
       }
 
       $scope.toggleFriend = toggleFriend;
-      function toggleFriend(friend) {
-        debugger;
+      function toggleFriend(item) {
+        if (item.user && timeline.groupsData.get(item.user.id)) {
+          // Remove items from timeline
+          timeline.itemsData.remove(timeline.itemsData.getIds({
+            filter: function(it) { return it.group === item.user.id; }
+          }));
+
+          // Remove the user group
+          timeline.groupsData.remove(item.user.id);
+        } else {
+          // Add a row for friend
+          timeline.groupsData.add({
+            id: item.user.id,
+            content: item.user.get('firstName'),
+            user: item.user
+          });
+
+          // Get friend's lineup and add to timeline
+          UserService.getLineupForFestival(item.user, festival)
+          .then(function(friendLineup) {
+            var tmp_timeline = friendLineup
+              .map(generatePerfItem.bind(null, {
+                group: item.user.id,
+                id: item.user.id // Avoid collisions with other users
+              })).concat($scope.timelineItems);
+            $scope.timelineItems = tmp_timeline;
+            timeline.setItems(tmp_timeline);
+          }, fail.bind(null, 'friend_performance'));
+        }
       }
 
 
