@@ -82,6 +82,7 @@ function UserService($q) {
         // Now actually get all performance objects
         var promises = relations.map(function(p) {
           var q = new Parse.Query(Performance);
+          q.include('artist');
           var d = $q.defer();
           q.get(p.id, {
             success: function(performance) { d.resolve(performance); },

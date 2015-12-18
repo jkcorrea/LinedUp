@@ -14,7 +14,7 @@ function FestivalsController(
 
   var show = function(festival) {
     function cmpListItems(A,B){var a=A.name.toLowerCase(),b=B.name.toLowerCase();return a>b?1:(a<b?-1:0);}
-    var activeTab = 'lineup';
+    $scope.activeTab = $state.current.url.slice(1);
     $scope.festival = festival;
     $scope.timelineItems = [];
     $scope.listItems = [];
@@ -32,7 +32,7 @@ function FestivalsController(
       };
 
     // Timeline config
-      var timelineContainer = document.getElementById('festival-timeline');
+      var timelineContainer = document.getElementById($scope.activeTab + '-timeline');
       var ZOOM_MIN = 4 * 3600000; // 4 hrs in ms
       var ZOOM_MAX = 1 * 86400000; // 1 day in ms
       var MAX_ZOOM_SHOW_MINOR = 89161006;
@@ -135,7 +135,6 @@ function FestivalsController(
           return { id: ix+1, content: stage };
         }));
       }
-      lineupTabData(); // Initial view. Invoke immediately
 
       function friendsTabData() {
         // Get user's lineup, set to first group
@@ -161,12 +160,10 @@ function FestivalsController(
             return {
               name: f.get('firstName')+' '+f.get('lastName'),
               avatar: f.get('picture'),
-              user: f.id
+              user: f
             };
           }).sort(cmpListItems);
         }, fail.bind(null, 'friends'));
-
-
       }
 
     // View actions
@@ -199,9 +196,14 @@ function FestivalsController(
         timeline.setItems(tmp_timeline);
       }
 
-      $scope.tabSelect = function(selected) {
-        activeTab = selected;
-        switch (selected) {
+      $scope.toggleFriend = toggleFriend;
+      function toggleFriend(friend) {
+        debugger;
+      }
+
+
+
+      switch ($scope.activeTab) {
         case 'lineup':
           lineupTabData();
           break;
@@ -210,15 +212,16 @@ function FestivalsController(
           break;
         case 'landmarks':
           break;
-        }
-      };
+      }
     };
 
   var index = function(festivals) { $scope.festivals = festivals; };
 
   // Run the corresponding controller#action
   switch ($state.current.name) {
-    case 'main.festival':
+    case 'main.festival.lineup':
+    case 'main.festival.friends':
+    case 'main.festival.landmarks':
       FestivalService.getFestival($stateParams.festivalId)
         .then(show, fail);
       break;

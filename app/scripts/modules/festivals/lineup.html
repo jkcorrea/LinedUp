@@ -1,0 +1,27 @@
+<ion-view>
+  <ion-content scroll="false" class="festival-content">
+
+    <div id="lineup-timeline"></div>
+
+    <div id="lineup-list-container">
+
+      <ion-alpha-scroll id="lineup-list" ng-model="listItems" key="name">
+        <div class="lineup-list-item" ng-click="lineupChange(item, 'timeline')">
+          <div class="artist-avatar" ng-class="activeTab" bg-img="{{item.avatar}}"></div>
+          <div>{{item.name}}</div>
+        </div>
+      </ion-alpha-scroll>
+
+      <div ng-if="listItems && !listItems.length" ng-switch on="searching">
+        <div ng-switch-when="true" class="no-results">
+          <h3>No artists found!</h3>
+        </div>
+        <div ng-switch-when="false">
+          <ion-spinner></ion-spinner>
+        </div>
+      </div>
+
+    </div>
+
+  </ion-content>
+</ion-view>

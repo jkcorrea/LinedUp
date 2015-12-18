@@ -42,13 +42,31 @@ function AppRouter($stateProvider, $urlRouterProvider) {
       })
       .state('main.festival', {
         url: '/festival/:festivalId',
+        abstract: true,
         views: {
           'pageContent': {
-            templateUrl: getTemplateUrl('festival', 'festivals'),
-            controller: 'FestivalsController'
+            templateUrl: getTemplateUrl('tabs', 'festivals'),
           }
         }
-      });
+      })
+        .state('main.festival.lineup', {
+          url: '/lineup',
+          views: {
+            'lineupTabContent': {
+              templateUrl: getTemplateUrl('lineup', 'festivals'),
+              controller: 'FestivalsController'
+            }
+          }
+        })
+        .state('main.festival.friends', {
+          url: '/friends',
+          views: {
+            'friendsTabContent': {
+              templateUrl: getTemplateUrl('friends', 'festivals'),
+              controller: 'FestivalsController'
+            }
+          }
+        });
 }
 
 module.exports = ['$stateProvider', '$urlRouterProvider', AppRouter];

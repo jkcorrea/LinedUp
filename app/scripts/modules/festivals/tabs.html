@@ -1,0 +1,33 @@
+<ion-view>
+  <ion-nav-title>{{festival.get('name')}}</ion-nav-title>
+
+  <ion-nav-buttons side="secondary">
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()"></button>
+  </ion-nav-buttons>
+
+  <ion-tabs class="tabs-positive tabs-icon-only">
+    <ion-tab title="Lineup"
+      ui-sref="main.festival.lineup"
+      icon-on="ion-ios-person"
+      icon-off="ion-ios-person-outline">
+
+      <ion-nav-view name="lineupTabContent"></ion-nav-view>
+
+    </ion-tab>
+
+    <ion-tab title="Friends"
+      ui-sref="main.festival.friends"
+      icon-on="ion-ios-people"
+      icon-off="ion-ios-people-outline">
+
+      <ion-nav-view name="friendsTabContent"></ion-nav-view>
+
+    </ion-tab>
+
+    <ion-tab title="Landmarks"
+      ui-sref="main.festival.landmarks"
+      icon-on="ion-ios-location"
+      icon-off="ion-ios-location-outline">
+    </ion-tab>
+  </ion-tabs>
+</ion-view>

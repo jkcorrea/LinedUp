@@ -30,7 +30,7 @@
   flex-direction: column;
 
 
-  #festival-timeline {
+  #lineup-timeline, #friends-timeline {
     position: relative;
     flex: 3;
 
@@ -58,6 +58,7 @@
     .lineup-list-item {
       & > * { display: inline-block; }
       .artist-avatar { height: 64px; width: 64px; }
+      .artist-avatar.friends { border-radius: 50%; }
     }
 
     .spinner { position: absolute; top: 5%; left: 45%; }
