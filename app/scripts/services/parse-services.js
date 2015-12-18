@@ -50,6 +50,7 @@ function PerformanceService($q) {
 function UserService($q) {
   this.getFriends = function(user) {
     var query = new Parse.Query(Parse.User);
+    query.notEqualTo('objectId', user.id);
     var deferred = $q.defer();
 
     query.find({
