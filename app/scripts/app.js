@@ -6,6 +6,7 @@ require('../bower_components/ionic-filter-bar/dist/ionic.filter.bar');
 window.Parse = require('../bower_components/parse/parse');
 window.vis = require('../bower_components/vis/dist/vis');
 
+
 require('./modules');
 require('./services');
 
@@ -18,6 +19,7 @@ module.exports = angular.module('LinedUp', [
   'jett.ionic.filter.bar',
 
   'LinedUp.controllers.Festivals',
+  'LinedUp.controllers.Landmarks',
   'LinedUp.controllers.Sessions',
   'LinedUp.services.Parse',
 ])
@@ -26,3 +28,4 @@ module.exports = angular.module('LinedUp', [
 .run(require('./app-main'));
 
 require('./directives');
+

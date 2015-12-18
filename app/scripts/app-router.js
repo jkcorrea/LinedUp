@@ -66,6 +66,24 @@ function AppRouter($stateProvider, $urlRouterProvider) {
               controller: 'FestivalsController'
             }
           }
+        })
+        .state('main.festival.landmarks', {
+          url: '/landmarks',
+          views: {
+            'landmarksTabContent': {
+              templateUrl: getTemplateUrl('landmarks', 'festivals'),
+              controller: 'LandmarksController'
+            }
+          }
+        })
+        .state('main.festival.map', {
+          url: '/map',
+          views: {
+            'landmarksTabContent': {
+              templateUrl: getTemplateUrl('map', 'festivals'),
+              controller: 'LandmarksController'
+            }
+          }
         });
 }
 

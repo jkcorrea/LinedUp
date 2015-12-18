@@ -1,11 +1,9 @@
 var Artist = Parse.Object.extend('Artist')
   , Festival = Parse.Object.extend('Festival')
+  , Landmark = Parse.Object.extend('Landmark')
   , Performance = Parse.Object.extend('Performance')
 
 function FestivalService($q) {
-  this.saveFestival = function(festival) {};
-  this.searchFestivals = function(query) {};
-
   this.getFestivals = function() {
     var query = new Parse.Query(Festival);
     var deferred = $q.defer();
@@ -103,7 +101,34 @@ function UserService($q) {
   };
 }
 
+function LandmarkService($q) {
+  this.getLandmarks = function() {
+    var landmarkQuery = new Parse.Query(Landmark);
+    var deferred = $q.defer();
+
+    landmarkQuery.find({
+      success: function(landmarks) { deferred.resolve(landmarks); },
+      error: function(err) { deferred.reject(err); },
+    });
+
+    return deferred.promise;
+  };
+
+  this.getLandmark = function(id) {
+    var landmarkQuery = new Parse.Query(Landmark);
+    var deferred = $q.defer();
+
+    landmarkQuery.get(id, {
+      success: function(landmark) { deferred.resolve(landmark); },
+      error: function(err) { deferred.reject(err); },
+    });
+
+    return deferred.promise;
+  };
+}
+
 module.exports = angular.module('LinedUp.services.Parse', [])
 .service('FestivalService', ['$q', FestivalService])
 .service('PerformanceService', ['$q', PerformanceService])
+.service('LandmarkService', ['$q', LandmarkService])
 .service('UserService', ['$q', UserService]);

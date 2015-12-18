@@ -261,7 +261,6 @@ function FestivalsController(
   switch ($state.current.name) {
     case 'main.festival.lineup':
     case 'main.festival.friends':
-    case 'main.festival.landmarks':
       FestivalService.getFestival($stateParams.festivalId)
         .then(show, fail);
       break;
