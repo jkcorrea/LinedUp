@@ -140,7 +140,12 @@ function FestivalsController(
         }));
       }
 
+
+      var friendsLineups = new vis.DataSet()
+        , friendsGroups = new vis.DataSet();
       function friendsTabData() {
+        timeline.setGroups(friendsGroups);
+        timeline.setItems(friendsLineups);
 
         // Get user's lineup, set to first group
         UserService.getLineupForFestival(user, festival)
@@ -148,10 +153,10 @@ function FestivalsController(
           var tmp_timeline = userLineup
             .map(generatePerfItem.bind(null, { group: user.id }));
           $scope.timelineItems = tmp_timeline;
-          timeline.setItems(tmp_timeline);
+          friendsLineups.update(tmp_timeline);
         }, fail.bind(null, 'user_performance'));
 
-        timeline.setGroups([{
+        friendsGroups.update([{
           id: user.id,
           content: user.get('firstName') || 'Me'
         }]);
@@ -202,22 +207,15 @@ function FestivalsController(
 
       $scope.toggleFriend = toggleFriend;
       function toggleFriend(item) {
-        if (item.user && timeline.groupsData.get(item.user.id)) {
+        if (item.user && friendsGroups.get(item.user.id)) {
           // Remove items from timeline
-          timeline.itemsData.remove(timeline.itemsData.getIds({
+          friendsLineups.remove(friendsLineups.getIds({
             filter: function(it) { return it.group === item.user.id; }
           }));
 
           // Remove the user group
-          timeline.groupsData.remove(item.user.id);
+          friendsGroups.remove(item.user.id);
         } else {
-          // Add a row for friend
-          timeline.groupsData.add({
-            id: item.user.id,
-            content: item.user.get('firstName'),
-            user: item.user
-          });
-
           // Get friend's lineup and add to timeline
           UserService.getLineupForFestival(item.user, festival)
           .then(function(friendLineup) {
@@ -227,13 +225,20 @@ function FestivalsController(
                 id: item.user.id // Avoid collisions with other users
               })).concat($scope.timelineItems);
             $scope.timelineItems = tmp_timeline;
-            timeline.setItems(tmp_timeline);
+            friendsLineups.update(tmp_timeline);
           }, fail.bind(null, 'friend_performance'));
+
+          // Add a row for friend
+          friendsGroups.update({
+            id: item.user.id,
+            content: item.user.get('firstName'),
+            user: item.user
+          });
         }
       };
 
       $scope.isChecked = function(item) {
-        return timeline.groupsData.get(item.user.id) ? 'checked' : '';
+        return friendsGroups.get(item.user.id) ? 'checked' : '';
       };
 
 
