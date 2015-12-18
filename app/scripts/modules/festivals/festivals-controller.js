@@ -7,6 +7,7 @@ function FestivalsController(
           UserService,
           $ionicFilterBar)
 {
+  Parse.User.current().fetch();
   var user = Parse.User.current();
 
   var fail = function(model,err){console.log("Could not retrieve "+(model||'festival')+"(s): ",err)};
@@ -81,13 +82,32 @@ function FestivalsController(
         cb(item);
       }
 
-    // My Lineup data
+    // View data
+      // Generates a list/timeline item obj from a Parse Performance
+      // Accepts either (opts, performance) or (performance)
+      function generateItem(opts, p_) {
+        var p = p_;
+        if (arguments.length < 2) p = opts;
+
+        return {
+          id: p.id,
+          avatar: p.get('artist').get('avatar'),
+          name: p.get('artist').get('name'),
+          performance: p,
+          start: p.get('start'),
+          end: p.get('end'),
+          className: 'magenta',
+          type: 'box',
+          group: opts.group || p.get('stage')
+        };
+      }
+
       function lineupTabData() {
         // Get festival lineup, populate list or timeline
         function cmpPerformances(userPerf) { return userPerf.id === this.id; }
         PerformanceService.getPerformancesForFestival(festival)
         .then(function(performances) {
-        UserService.getLineupForFestival(festival)
+        UserService.getLineupForFestival(user, festival)
         .then(function(userLineup) {
           var tmp_lineup = []
             , tmp_timeline = [];
@@ -96,24 +116,10 @@ function FestivalsController(
           // festival lineup depending on what the current user has in Parse
           for (var ix = 0; ix < performances.length; ix++) {
             var p = performances[ix];
-            var perfItem = {
-              // Lineup list data
-              avatar: p.get('artist').get('avatar'),
-              name: p.get('artist').get('name'),
-              performance: p,
-
-              // Vis Timeline data
-              id: p.id,
-              start: p.get('start'),
-              end: p.get('end'),
-              className: 'magenta',
-              type: 'box',
-              group: p.get('stage')
-            };
-
+            var item = generateItem(p);
             // Push into festival or user's lineup
-            if (userLineup.some(cmpPerformances, p)) tmp_timeline.push(perfItem);
-            else tmp_lineup.push(perfItem);
+            if (userLineup.some(cmpPerformances, p)) tmp_timeline.push(item);
+            else tmp_lineup.push(item);
           }
 
           $scope.listItems = tmp_lineup.sort(cmpArtists);
@@ -130,22 +136,31 @@ function FestivalsController(
 
       function friendsTabData() {
         // Get user's lineup, set to first group
-        UserService.getLineupForFestival(festival)
+        UserService.getLineupForFestival(user, festival)
         .then(function(userLineup) {
-          var tmp_timeline = userLineup.map(function(p) {
-            return {
-              // Vis Timeline data
-              id: p.id,
-              start: p.get('start'),
-              end: p.get('end'),
-              className: 'magenta',
-              type: 'box',
-              group: 0 // Current user is always group 0
-            };
-          });
+          var tmp_timeline = userLineup
+            .map(generateItem.bind(null, { group: 1 }));
+          $scope.timelineItems = tmp_timeline;
+          timeline.setItems(tmp_timeline);
+
         }, fail.bind(null, 'user_performance'));
 
-        timeline.setGroups([{ id: 0, content: user.get('firstName') }]);
+        timeline.setGroups([{
+          id: 1,
+          content: user.get('firstName') || 'Me'
+        }]);
+
+        // Set up item list for friends instead of artists
+        UserService.getFriends(user)
+        .then(function(friends) {
+          // var tmp_friends = friends.map(function(f) {
+          //   return {
+          //     f.get('firstName')
+          //   };
+          // });
+
+          // $scope.listItems =
+        }, fail.bind(null, 'friends'));
       }
 
     // View actions
@@ -161,7 +176,7 @@ function FestivalsController(
           tmp_timeline = $scope.timelineItems.concat(tmp_item);
 
           // Add this performance to the user's lineup
-          UserService.addPerformance(item.performance);
+          UserService.addPerformance(user, item.performance);
         } else {
           ix = $scope.timelineItems.reduce(find, 0);
           tmp_item = $scope.timelineItems[ix];
@@ -170,7 +185,7 @@ function FestivalsController(
           tmp_lineup = $scope.listItems.concat(tmp_item).sort(cmpArtists);
 
           // Remove this performance from user's lineup
-          UserService.removePerformance(item.performance);
+          UserService.removePerformance(user, item.performance);
         }
 
         $scope.listItems = tmp_lineup;

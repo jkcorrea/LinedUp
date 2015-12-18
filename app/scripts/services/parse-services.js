@@ -48,9 +48,7 @@ function PerformanceService($q) {
 }
 
 function UserService($q) {
-  this.getFriends = function() {
-    var user = Parse.User.current();
-    if (!user) return;
+  this.getFriends = function(user) {
     var query = new Parse.Query(Parse.User);
     var deferred = $q.defer();
 
@@ -59,37 +57,46 @@ function UserService($q) {
       error: function(err) { deferred.reject(err); }
     });
 
-    return deferred;
+    return deferred.promise;
   };
 
-  this.addPerformance = function(performance) {
-    var user = Parse.User.current();
-    if (!user) return;
+  this.addPerformance = function(user, performance) {
     var rel = user.relation('performances');
     rel.add(performance);
     user.save();
   };
 
-  this.removePerformance = function(performance) {
-    var user = Parse.User.current();
-    if (!user) return;
+  this.removePerformance = function(user, performance) {
     var rel = user.relation('performances');
     rel.remove(performance);
     user.save();
   };
 
-  this.getLineupForFestival = function(festival) {
-    var user = Parse.User.current();
-    if (!user) return;
-
+  this.getLineupForFestival = function(user, festival) {
     var deferred = $q.defer();
-
     // First get all of the user's performances
     user.relation('performances').query()
     .equalTo('festival', festival).find({
-      success: function(performances) { deferred.resolve(performances) },
+      success: function(relations) {
+        // Now actually get all performance objects
+        var promises = relations.map(function(p) {
+          var q = new Parse.Query(Performance);
+          var d = $q.defer();
+          q.get(p.id, {
+            success: function(performance) { d.resolve(performance); },
+            error: function(err) { d.reject(err); }
+          });
+          return d.promise;
+        });
+
+        // Wait until they're all retrieved, then send result
+        $q.all(promises).then(function(performances) {
+          deferred.resolve(performances)
+        }, function(err) { deferred.reject(err); });
+      },
       error: function(err) { deferred.reject(err); }
     });
+
     return deferred.promise;
   }
 }
