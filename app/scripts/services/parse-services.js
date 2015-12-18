@@ -48,6 +48,20 @@ function PerformanceService($q) {
 }
 
 function UserService($q) {
+  this.getFriends = function() {
+    var user = Parse.User.current();
+    if (!user) return;
+    var query = new Parse.Query(Parse.User);
+    var deferred = $q.defer();
+
+    query.find({
+      success: function(users) { deferred.resolve(users); },
+      error: function(err) { deferred.reject(err); }
+    });
+
+    return deferred;
+  };
+
   this.addPerformance = function(performance) {
     var user = Parse.User.current();
     if (!user) return;

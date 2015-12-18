@@ -11,17 +11,18 @@ function FestivalsController(
 
   var show = function(festival) {
     function cmpArtists(A,B){var a=A.name.toLowerCase(),b=B.name.toLowerCase();return a>b?1:(a<b?-1:0);}
+    var activeTab = 'lineup';
     $scope.festival = festival;
     $scope.timelineItems = [];
-    $scope.lineupItems = [];
+    $scope.listItems = [];
     $scope.searching = false;
 
     // Search bar config
       var filterBarInstance;
       $scope.showFilterBar = function() {
         filterBarInstance = $ionicFilterBar.show({
-          items: $scope.lineupItems,
-          update: function(items){$scope.lineupItems=items;},
+          items: $scope.listItems,
+          update: function(items){$scope.listItems=items},
           done: function() {$scope.$apply(function(){$scope.searching=true})},
           cancel: function() {$scope.$apply(function(){$scope.searching=false})}
         });
@@ -31,15 +32,12 @@ function FestivalsController(
       var timelineContainer = document.getElementById('festival-timeline');
       var ZOOM_MIN = 4 * 3600000;
       var MAX_ZOOM_SHOW_MINOR = 89161006;
-      var timelineGroups = festival
-        .get('stages')
-        .map(function(stage,ix){return{id:ix+1,content:stage}});
 
       var start = new Date(festival.get('start'))
         , end = new Date(festival.get('end'));
       timelineOpts = {
         min: start.setHours(start.getHours() - 12),
-        max: end.setHours(start.getHours() + 12),
+        max: end.setHours(start.getHours() + 16),
         timeAxis: { scale: 'hour', step: 3 },
         format: { minorLabels: { hour: 'ha' } },
         showMinorLabels: false,
@@ -49,7 +47,7 @@ function FestivalsController(
       };
 
 
-      var timeline = new vis.Timeline(timelineContainer, [], timelineGroups, timelineOpts);
+      var timeline = new vis.Timeline(timelineContainer, [], [], timelineOpts);
 
       // Show minor labels when zoomed in enough
       timeline.on('rangechange', function(e) {
@@ -81,44 +79,71 @@ function FestivalsController(
         cb(item);
       }
 
-    // View data
-      function cmpPerformances(userPerf) { return userPerf.id === this.id; }
-      PerformanceService.getPerformancesForFestival(festival)
-      .then(function(performances) {
-      UserService.getLineupForFestival(festival)
-      .then(function(userLineup) {
-        var tmp_lineup = []
-          , tmp_timeline = [];
+    // My Lineup data
+      function lineupTabData() {
+        // Get festival lineup, populate list or timeline
+        function cmpPerformances(userPerf) { return userPerf.id === this.id; }
+        PerformanceService.getPerformancesForFestival(festival)
+        .then(function(performances) {
+        UserService.getLineupForFestival(festival)
+        .then(function(userLineup) {
+          var tmp_lineup = []
+            , tmp_timeline = [];
 
-        // Go through each performance, adding to timeline or
-        // festival lineup depending on what the current user has in Parse
-        for (var ix = 0; ix < performances.length; ix++) {
-          var p = performances[ix];
-          var perfItem = {
-            // Lineup list data
-            avatar: p.get('artist').get('avatar'),
-            name: p.get('artist').get('name'),
-            performance: p,
+          // Go through each performance, adding to timeline or
+          // festival lineup depending on what the current user has in Parse
+          for (var ix = 0; ix < performances.length; ix++) {
+            var p = performances[ix];
+            var perfItem = {
+              // Lineup list data
+              avatar: p.get('artist').get('avatar'),
+              name: p.get('artist').get('name'),
+              performance: p,
 
-            // Vis Timeline data
-            id: p.id,
-            start: p.get('start'),
-            end: p.get('end'),
-            className: 'magenta',
-            type: 'box',
-            group: p.get('stage')
-          };
+              // Vis Timeline data
+              id: p.id,
+              start: p.get('start'),
+              end: p.get('end'),
+              className: 'magenta',
+              type: 'box',
+              group: p.get('stage')
+            };
 
-          // Push into festival or user's lineup
-          if (userLineup.some(cmpPerformances, p)) tmp_timeline.push(perfItem);
-          else tmp_lineup.push(perfItem);
-        }
+            // Push into festival or user's lineup
+            if (userLineup.some(cmpPerformances, p)) tmp_timeline.push(perfItem);
+            else tmp_lineup.push(perfItem);
+          }
 
-        $scope.lineupItems = tmp_lineup.sort(cmpArtists);
-        $scope.timelineItems = tmp_timeline;
-        timeline.setItems(tmp_timeline);
-      }, fail.bind(null, 'user_performance'));
-      }, fail.bind(null, 'performance'));
+          $scope.listItems = tmp_lineup.sort(cmpArtists);
+          $scope.timelineItems = tmp_timeline;
+          timeline.setItems(tmp_timeline);
+        }, fail.bind(null, 'user_performance'));
+        }, fail.bind(null, 'performance'));
+
+        timelineGroups = festival.get('stages')
+          .map(function(stage, ix) { return { id: ix+1, content: stage } });
+      }
+      lineupTabData(); // Initial view. Invoke immediately
+
+      function friendTabData() {
+        // Get user's lineup, set to first group
+        UserService.getLineupForFestival(festival)
+        .then(function(userLineup) {
+          var tmp_timeline = userLineup.map(function(p) {
+            return {
+              // Vis Timeline data
+              id: p.id,
+              start: p.get('start'),
+              end: p.get('end'),
+              className: 'magenta',
+              type: 'box',
+              group: 0 // Current user is always group 0
+            };
+          });
+        }, fail.bind(null, 'user_performance'));
+
+        timeline.setGroups([{ id: 0, content: user.get('firstName') }]);
+      }
 
     // View actions
       $scope.lineupChange = lineupChange;
@@ -126,9 +151,9 @@ function FestivalsController(
         function find(a, b, ix) { return (b.id === item.id) ? ix : a; }
         var tmp_lineup, tmp_timeline, tmp_item, ix;
         if (!dest || dest === 'timeline') {
-          ix = $scope.lineupItems.indexOf(item);
-          tmp_item = $scope.lineupItems[ix];
-          tmp_lineup = $scope.lineupItems.slice(0);
+          ix = $scope.listItems.indexOf(item);
+          tmp_item = $scope.listItems[ix];
+          tmp_lineup = $scope.listItems.slice(0);
           tmp_lineup.splice(ix, 1);
           tmp_timeline = $scope.timelineItems.concat(tmp_item);
 
@@ -139,16 +164,30 @@ function FestivalsController(
           tmp_item = $scope.timelineItems[ix];
           tmp_timeline = $scope.timelineItems.slice(0);
           tmp_timeline.splice(ix, 1);
-          tmp_lineup = $scope.lineupItems.concat(tmp_item).sort(cmpArtists);
+          tmp_lineup = $scope.listItems.concat(tmp_item).sort(cmpArtists);
 
           // Remove this performance from user's lineup
           UserService.removePerformance(item.performance);
         }
 
-        $scope.lineupItems = tmp_lineup;
+        $scope.listItems = tmp_lineup;
         $scope.timelineItems = tmp_timeline;
         timeline.setItems(tmp_timeline);
       }
+
+      $scope.tabSelect = function(selected) {
+        activeTab = selected;
+        switch (selected) {
+        case 'lineup':
+          lineupTabData();
+          break;
+        case 'friends':
+          friendsTabData();
+          break;
+        case 'landmarks':
+          break;
+        }
+      };
     };
 
   var index = function(festivals) { $scope.festivals = festivals; };

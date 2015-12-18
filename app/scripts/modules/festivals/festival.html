@@ -11,17 +11,16 @@
 
       <div id="festival-timeline"></div>
 
-
       <div id="lineup-list-container">
 
-        <ion-alpha-scroll id="lineup-list" ng-model="lineupItems" key="name">
+        <ion-alpha-scroll id="lineup-list" ng-model="listItems" key="name">
           <div class="lineup-list-item" ng-click="lineupChange(item, 'timeline')">
             <div class="artist-avatar" bg-img="{{item.avatar}}"></div>
             <div>{{item.name}}</div>
           </div>
         </ion-alpha-scroll>
 
-        <div ng-if="lineupItems && !lineupItems.length" ng-switch on="searching">
+        <div ng-if="listItems && !listItems.length" ng-switch on="searching">
           <div ng-switch-when="true" class="no-results">
             <h3>No artists found!</h3>
           </div>
@@ -32,6 +31,25 @@
 
       </div>
 
-
   </ion-content>
+
+  <ion-tabs class="tabs-positive tabs-icon-only">
+    <ion-tab title="Lineup"
+      icon-on="ion-ios-person"
+      icon-off="ion-ios-person-outline"
+      on-select="tabSelect('lineup')">
+    </ion-tab>
+
+    <ion-tab title="Friends"
+      icon-on="ion-ios-people"
+      icon-off="ion-ios-people-outline"
+      on-select="tabSelect('friends')">
+    </ion-tab>
+
+    <ion-tab title="Landmarks"
+      icon-on="ion-ios-location"
+      icon-off="ion-ios-location-outline"
+      on-select="tabSelect('landmarks')">
+    </ion-tab>
+  </ion-tabs>
 </ion-view>
