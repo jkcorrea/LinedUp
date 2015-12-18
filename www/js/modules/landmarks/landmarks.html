@@ -7,28 +7,36 @@
       <ion-item class="item item-divider">
         Stage
       </ion-item>
-      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Stage'">
+      <ion-item ng-repeat="landmark in landmarks"
+                ng-if="landmark.get('category') == 'Stage'"
+                ui-sref="main.map">
         {{landmark.get('name')}}
       </ion-item>
 
       <ion-item class="item item-divider">
         Food
       </ion-item>
-      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Food'">
+      <ion-item ng-repeat="landmark in landmarks"
+                ng-if="landmark.get('category') == 'Food'"
+                ui-sref="main.map">
         {{landmark.get('name')}}
       </ion-item>
 
       <ion-item class="item item-divider">
         Drinks
       </ion-item>
-      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Drink'">
+      <ion-item ng-repeat="landmark in landmarks"
+                ng-if="landmark.get('category') == 'Drink'"
+                ui-sref="main.map">
         {{landmark.get('name')}}
       </ion-item>
 
       <ion-item class="item item-divider">
         Charging Station
       </ion-item>
-      <ion-item ng-repeat="landmark in landmarks" ng-if="landmark.get('category') == 'Charge'">
+      <ion-item ng-repeat="landmark in landmarks"
+                ng-if="landmark.get('category') == 'Charging Station'"
+                ui-sref="main.map">
         {{landmark.get('name')}}
       </ion-item>
     </ion-list>
